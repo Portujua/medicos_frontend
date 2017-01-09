@@ -1,0 +1,24 @@
+# Cambiar el post a 500mb
+php_value upload_max_filesize 500M
+php_value post_max_size 500M
+
+# Poner UTF8 en todos los .html
+AddCharset UTF-8 .html
+
+# Evitar que se muestre el contenido de las carpetas
+Options -Indexes
+
+# Pagina de 404 not found
+ErrorDocument 404 /medicos/404.html
+
+# Prohibir acceso a .htaccess
+<Files ~ “^.*\.([Hh][Tt][Aa])”>
+order allow,deny
+deny from all
+satisfy all
+</Files>
+
+RewriteEngine on
+
+# Reglas para la API
+RewriteRule ^api/personal$ /medicos/php/run.php?fn=cargar_personal [QSA,L]
