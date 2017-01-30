@@ -1,5 +1,5 @@
 (function(){
-	var Perfil = function($scope, $http, $location, $routeParams, $timeout, $window, AlertService, RESTService, LoginService)
+	var Paciente = function($scope, $http, $location, $routeParams, $timeout, $window, AlertService, RESTService, LoginService)
 	{		
 		$scope.safeApply = function(fn) {
 		    var phase = this.$root.$$phase;
@@ -83,6 +83,68 @@
 			});
 		}
 
+		$scope.registrar_paciente = function(){
+			$.confirm({
+				title: 'Confirmar acción',
+				content: '¿Está seguro que desea añadir a <strong>' + $scope.paciente.nombre + ' ' + $scope.paciente.apellido + '</strong>?',
+				confirm: function(){
+					var post = $scope.paciente;
+
+					var nac = post.fecha_nacimiento.split('/');
+					post.nacimiento = nac[2] + "-" + nac[1] + "-" + nac[0];
+
+					var fn = "agregar_paciente";
+					var msg = "Paciente añadido con éxito";
+
+					if ($routeParams.cedula)
+					{
+						fn = "editar_paciente";
+						msg = "Paciente modificado con éxito";
+					}
+
+					$http({
+						method: 'POST',
+						url: "php/run.php?fn=" + fn,
+						data: $.param(post),
+						headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					}).then(function(obj){
+						console.log(obj)
+						if (obj.data.ok)
+						{
+							AlertService.showSuccess(obj.data.msg);
+					    	$location.path("/");
+					    }
+					    else
+					    	console.log(obj.data);
+					});
+				},
+				cancel: function(){}
+			});
+		}
+
+		$scope.cambiar_estado = function(id, estado){
+			$http({
+				method: 'POST',
+				url: "php/run.php?fn=cambiar_estado_paciente",
+				data: $.param({pid:id, estado:estado}),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then(function(obj){
+				console.log(obj)
+				if (obj.data.ok)
+				{
+					AlertService.showSuccess(obj.data.msg);
+			    	$scope.cargar_pacientes();
+			    	$scope.p_ = null;
+			    }
+			    else
+			    	console.log(obj.data);
+			});
+		}
+
+		$scope.seleccionar = function(p){
+			$scope.p_ = p;
+		}
+
 		$scope.anadir_telefono = function(){
 			$scope.paciente.telefonos.push({
 				tipo: $scope.telefono.tipo,
@@ -113,7 +175,6 @@
 
 				if (response.data.ok) {
 					AlertService.showSuccess(response.data.msg);
-					LoginService.login({username: LoginService.getCurrentUser().usuario, password: LoginService.getCurrentUser().contrasena});
 				}
 				else {
 					AlertService.showError("Ha ocurrido un error");
@@ -122,74 +183,22 @@
 			})
 		}
 
-		$scope.cargar_mas = function(){
-			if ($scope.chat.mensajes.length == 0) return;
-
-			var hid = $scope.chat.mensajes[0].id;
-
-			for (var i = 0; i < $scope.chat.mensajes.length; i++)
-				hid = $scope.chat.mensajes[i].id < hid ? $scope.chat.mensajes[i].id : hid;
-
-			$scope.chat_cargar_mensajes({
-					medico: $scope.chat_info.medico, 
-					paciente: LoginService.getCurrentUser().id,
-					n: 10,
-					last: hid
-			}).then((response) => {
-				for (var i = 0; i < $scope.chat.mensajes.length; i++)
-					response.data.mensajes.push($scope.chat.mensajes[i]);
-
-				$scope.chat.mensajes = response.data.mensajes;
-			});
-		}
-
-		$scope.sumar_mensajes = function(ms){
-			var aux = [];
-
-			for (var k = 0; k < ms.length; k++) {
-				var c = true;
-
-				for (var i = 0; i < $scope.chat.mensajes.length; i++)
-					if ($scope.chat.mensajes[i].html == ms[k].html && $scope.chat.mensajes[i].hora_str == ms[k].hora_str)
-						c = false;
-
-				if (c)
-					$scope.chat.mensajes.push(ms[k]);
-			}
-
-			// Remuevo los 'ahora'
-			for (var i = 0; i < $scope.chat.mensajes.length; i++)
-				if ($scope.chat.mensajes[i].hora_str)
-					aux.push($scope.chat.mensajes[i]);
-
-			$scope.chat.mensajes = aux;
-		}
-
 		$scope.go_chat = function(info, status = true){
-			$scope.isChatting = status && !$scope.isClosed;
+			$scope.isChatting = status;
 
 			if (!$scope.isChatting) return;
-
-			$scope.isClosed = false;
 
 			$scope.chat_cargar_mensajes({
 				medico: info.medico, 
 				paciente: LoginService.getCurrentUser().id,
 				n: 10,
-				last: -1
+				offset: 0
 			}).then((response) => {
-				if ($scope.chat)
-					$scope.sumar_mensajes(response.data.mensajes);
-				else
-					$scope.chat = response.data;
-				
-				$timeout(() => {
-					$scope.autoscroll();
-				}, 100);
+				console.log(response.data)
 
 				$timeout(() => {
-					$scope.go_chat(info);
-				}, 10000);
+					$scope.go_chat(info, true);
+				}, 3000);
 			});
 		}
 
@@ -202,55 +211,11 @@
 			});
 		}
 
-		$scope.enviar_mensaje = function(event){
-			if (event) {
-				if (event.keyCode == 13)
-					$scope.enviar_mensaje();
-
-				return;
-			}
-
-			$http({
-				method: 'POST',
-				url: "php/run.php?fn=agregar_mensaje",
-				data: $.param({
-					medico: $scope.chat_info.medico,
-					paciente: LoginService.getCurrentUser().id,
-					mensaje: $scope.chat_info.mensaje,
-					owner: LoginService.getCurrentUser().usuario,
-					owner_name: LoginService.getCurrentUser().nombre + " " + LoginService.getCurrentUser().apellido
-				}),
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			}).then((response) => {
-				if (response.data.ok) {
-					$scope.chat.mensajes.push({
-						owner: LoginService.getCurrentUser().usuario,
-						html: $scope.chat_info.mensaje
-					});
-
-					$scope.chat_info.mensaje = '';
-					
-					$timeout(() => {
-						$scope.autoscroll();
-					}, 100);
-				}
-				else
-					console.log(response.data)
-			});
-		}
-
-		$scope.autoscroll = function(){
-			//Auto-scroll			
-			var newscrollHeight = parseInt($(".mensajes").css("height")) - 10;
-			
-			$(".mensajes").animate({ scrollTop: newscrollHeight }, 0); //Autoscroll to bottom of div
-		}
-
 		if ($routeParams.cedula)
 		{
 			$scope.cargar_paciente($routeParams.cedula);
 		}
 	};
 
-	angular.module("medicos").controller("Perfil", Perfil);
+	angular.module("adminapp").controller("Paciente", Paciente);
 }());

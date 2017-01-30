@@ -32,9 +32,9 @@
             }
             elseif ($this->connect_to == "main")
             {
-                $this->username = "ejloren1_admin";
+                $this->username = "salazars_eduardo";
                 $this->password = "21115476";
-                $this->dsn = "mysql:dbname=ejloren1_medicos;host=localhost";
+                $this->dsn = "mysql:dbname=salazars_medicos;host=localhost";
             }
             elseif ($this->connect_to == "main2")
             {

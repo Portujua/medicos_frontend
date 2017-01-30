@@ -14,6 +14,10 @@
 		$scope.checkSession = function(){
 			return LoginService.isLoggedIn();
 		}
+
+		$interval(() => {
+			$scope.session = LoginService;
+		}, 1000);
 	};
 
 	angular.module("medicos").controller("MainController", MainController);

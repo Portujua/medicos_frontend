@@ -38,25 +38,6 @@ create table Telefono_Tipo (
 	primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 
-create table Telefono (
-	id int not null auto_increment,
-	tlf varchar(128) not null,
-	tipo int not null,
-	medico int,
-	paciente int,
-	primary key(id),
-	foreign key (tipo) references Telefono_Tipo(id),
-	foreign key (medico) references Medico(id),
-	foreign key (paciente) references Paciente(id)
-) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
-
-create table Log_Login (
-	id int not null auto_increment,
-	fecha datetime not null,
-	username varchar(32) not null,
-	primary key(id)
-) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
-
 create table Paciente (
 	id int not null auto_increment,
 	nombre varchar(32) not null,
@@ -79,6 +60,25 @@ create table Paciente (
 	primary key(id),
 	unique(cedula),
 	foreign key (lugar) references Lugar(id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+create table Telefono (
+	id int not null auto_increment,
+	tlf varchar(128) not null,
+	tipo int not null,
+	medico int,
+	paciente int,
+	primary key(id),
+	foreign key (tipo) references Telefono_Tipo(id),
+	foreign key (medico) references Medico(id),
+	foreign key (paciente) references Paciente(id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+create table Log_Login (
+	id int not null auto_increment,
+	fecha datetime not null,
+	username varchar(32) not null,
+	primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 
 create table Area (

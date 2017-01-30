@@ -1,5 +1,7 @@
 (function(){
 	angular.module("medicos").factory('LoginService', function($http, $location, AlertService, $localStorage, $interval){
+		$localStorage.$reset();
+
 		return {
 			isLoggedIn: function(){
 				return typeof $localStorage.user != 'undefined';
@@ -14,13 +16,13 @@
 				$http.get("php/run.php?fn=actualizar_hora_sesion");
 			},
 			login: function(loginData){
+				$localStorage.$reset();
 				$http({
 					method: 'POST',
 					url: "php/run.php?fn=login", 
 					data: $.param({username:loginData.username, password:loginData.password}),
 					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				}).then(function(obj){
-					console.log(obj)
 					var data = obj.data;
 					if (data.error)
 						AlertService.showError("Usuario o contraseña inválida");

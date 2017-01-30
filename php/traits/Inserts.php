@@ -83,7 +83,7 @@
 
             try {
                 $query = $this->db->prepare("
-                    insert into mensaje (paciente, medico, hora, html, owner, owner_name)
+                    insert into Mensaje (paciente, medico, hora, html, owner, owner_name)
                     values (:paciente, :medico, now(), :mensaje, :owner, :owner_name)
                 ");
 

@@ -38,6 +38,7 @@
                     u.estado_civil as estado_civil,
                     u.direccion as direccion,
                     u.lugar as lugar_id,
+                    u.contrasena as contrasena,
                     date_format(u.fecha_nacimiento, '%d/%m/%Y') as fecha_nacimiento, 
                     date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
                     (

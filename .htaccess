@@ -1,7 +1,3 @@
-# Cambiar el post a 500mb
-php_value upload_max_filesize 500M
-php_value post_max_size 500M
-
 # Poner UTF8 en todos los .html
 AddCharset UTF-8 .html
 

@@ -171,8 +171,6 @@
 				data: $.param({dias: dias, usuario: LoginService.getCurrentUser().id}),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then((response) => {
-				console.log(response)
-
 				if (response.data.ok) {
 					AlertService.showSuccess(response.data.msg);
 				}

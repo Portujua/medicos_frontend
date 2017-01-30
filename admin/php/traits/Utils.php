@@ -210,53 +210,5 @@
                 return json_encode($json);
             }
         }
-
-        public function csv_personas()
-        {
-            $csv = array();
-            $csv[] = array("Nombre completo", "Cedula", "Telefonos", "Correo electronico", "Sexo", "Estado Civil", "Direccion", "Facebook", "Twitter", "Instagram");
-
-            $data = json_decode($this->cargar_personas(array()), true);
-            
-            foreach ($data as $d)
-            {
-                $tlfs = "";
-
-                foreach ($d['telefonos'] as $tlf)
-                    $tlfs .= $tlf['numero'] . " (" . $tlf['tipo'] . ")\r\n";
-
-                $csv[] = array(
-                    $d['nombre_completo'],
-                    $d['cedula'],
-                    $tlfs,
-                    $d['email'],
-                    $d['sexo'],
-                    $d['estado_civil'],
-                    $d['direccion'] . ", " . $d['lugar_str'],
-                    isset($d['facebook']) ? $d['facebook'] : "",
-                    isset($d['twitter']) ? $d['twitter'] : "",
-                    isset($d['instagram']) ? $d['instagram'] : ""
-                );
-            }
-
-            return $csv;
-        }
-
-        public function csv_personas_root()
-        {
-            $csv = array();
-            $csv[] = array("Nombre completo", "Cedula", "Fecha de nacimiento");
-
-            $data = json_decode($this->cargar_personas(array()), true);
-            
-            foreach ($data as $d)
-                $csv[] = array(
-                    $d['nombre_completo'],
-                    $d['cedula'],
-                    $d['fecha_nacimiento']
-                );
-
-            return $csv;
-        }
 	}
 ?>

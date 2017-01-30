@@ -169,7 +169,9 @@
                 ":paciente" => $post['paciente']
             ));
 
-            $chat['paciente'] = $query->fetchAll()[0]['nombre_completo'];
+            $chat['paciente'] = $query->fetchAll();
+            $chat['paciente'] = $chat['paciente'][0];
+            $chat['paciente'] = $chat['paciente']['nombre_completo'];
 
             $query = $this->db->prepare("
                 select
@@ -182,7 +184,9 @@
                 ":medico" => $post['medico']
             ));
 
-            $chat['medico'] = $query->fetchAll()[0]['nombre_completo'];
+            $chat['medico'] = $query->fetchAll();
+            $chat['medico'] = $chat['medico'][0];
+            $chat['medico'] = $chat['medico']['nombre_completo'];
 
             return json_encode($chat);
         }

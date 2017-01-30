@@ -1,7 +1,5 @@
 <?php
 	trait Updates {
-		//abstract public function generar_tokens_guia($post);
-
 		public function cambiar_estado_medico($post)
         {
             $json = array();
