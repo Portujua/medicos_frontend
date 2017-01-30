@@ -15,7 +15,7 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown" ng-show="session.isLoggedIn()">
 					<a class="menuitem" href="./#/" class="dropdown-toggle" data-toggle="dropdown">
-						{{ session.getCurrentUser().nombre_completo }} <small>({{ session.getCurrentUser().dias_restantes > 0 ? session.getCurrentUser().dias_restantes + ' DÍAS' : 'GRATIS' }})</small> <span class="caret"></span>
+						{{ session.getCurrentUser().nombre_completo }} <small ng-show="!session.getCurrentUser().es_medico">({{ session.getCurrentUser().dias_restantes > 0 ? session.getCurrentUser().dias_restantes + ' DÍAS' : 'GRATIS' }})</small> <span class="caret"></span>
 					</a>
 
 					<ul id="login-dp" class="dropdown-menu">

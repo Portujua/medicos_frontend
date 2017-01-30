@@ -1,8 +1,8 @@
 <div class="perfil" ng-controller="Perfil">
 	<div class="sidebar" ng-init="subtopic = 1;">
 		<p ng-click="subtopic = 1;" class="{{ subtopic == 1 ? 'active' : '' }}">Mi perfil</p>
-		<p ng-click="subtopic = 2;" class="{{ subtopic == 2 ? 'active' : '' }}">Suscripción</p>
-		<p ng-click="subtopic = 3;" class="{{ subtopic == 3 ? 'active' : '' }}" ng-show="session.getCurrentUser().dias_restantes > 0">Consulta</p>
+		<p ng-click="subtopic = 2;" class="{{ subtopic == 2 ? 'active' : '' }}" ng-hide="session.getCurrentUser().es_medico">Suscripción</p>
+		<p ng-click="subtopic = 3;" class="{{ subtopic == 3 ? 'active' : '' }}" ng-show="session.getCurrentUser().dias_restantes > 0 || session.getCurrentUser().es_medico">Consulta</p>
 		<hr/>
 		<p ng-click="session.logout()">Salir</p>
 	</div>
@@ -44,17 +44,28 @@
 
 		<div class="chat" ng-if="subtopic == 3" ng-init="$parent.isChatting = false;">
 			<div ng-show="!$parent.isChatting" class="chat-selection">
-				<p>Selecciona un área</p>
-				<select ng-model="$parent.chat_info.area" ng-init="cargar_areas()" ng-change="$parent.chat_info.medico = null;">
-					<option ng-repeat="a in areas" value="{{ a.id }}">{{ a.nombre }}</option>
-				</select>
-				
-				<p ng-show="$parent.chat_info.area">Selecciona un médico</p>
-				<select ng-show="$parent.chat_info.area" ng-model="$parent.chat_info.medico" ng-init="cargar_medicos()">
-					<option ng-repeat="m in medicos | area:$parent.chat_info.area" value="{{ m.id }}">{{ m.nombre_completo }}</option>
-				</select>
+				<div ng-hide="session.getCurrentUser().es_medico">
+					<p>Selecciona un área</p>
+					<select ng-model="$parent.chat_info.area" ng-init="cargar_areas()" ng-change="$parent.chat_info.medico = null;">
+						<option ng-repeat="a in areas" value="{{ a.id }}">{{ a.nombre }}</option>
+					</select>
+					
+					<p ng-show="$parent.chat_info.area">Selecciona un médico</p>
+					<select ng-show="$parent.chat_info.area" ng-model="$parent.chat_info.medico" ng-init="cargar_medicos()">
+						<option ng-repeat="m in medicos | area:$parent.chat_info.area" value="{{ m.id }}">{{ m.nombre_completo }}</option>
+					</select>
 
-				<button type="button" class="btn btn-primary btn-block" ng-disabled="!$parent.chat_info.area || !$parent.chat_info.medico" ng-click="$parent.isClosed = false; go_chat($parent.chat_info);">Chatear</button>
+					<button type="button" class="btn btn-primary btn-block" ng-disabled="!$parent.chat_info.area || !$parent.chat_info.medico" ng-click="$parent.isClosed = false; go_chat($parent.chat_info);">Chatear</button>
+				</div>
+
+				<div ng-show="session.getCurrentUser().es_medico">
+					<p>Selecciona un paciente</p>
+					<select ng-model="$parent.chat_info.paciente" ng-init="cargar_pacientes()">
+						<option ng-repeat="a in pacientes" value="{{ a.id }}">{{ a.nombre_completo }}</option>
+					</select>
+
+					<button type="button" class="btn btn-primary btn-block" ng-disabled="!$parent.chat_info.paciente" ng-click="$parent.isClosed = false; go_chat($parent.chat_info);">Chatear</button>
+				</div>
 			</div>
 
 			<button ng-show="$parent.isChatting" class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="$parent.isClosed = true; $parent.isChatting = false;">&larr; Volver</button>
