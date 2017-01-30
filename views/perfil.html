@@ -1,0 +1,82 @@
+<div class="perfil" ng-controller="Perfil">
+	<div class="sidebar" ng-init="subtopic = 1;">
+		<p ng-click="subtopic = 1;" class="{{ subtopic == 1 ? 'active' : '' }}">Mi perfil</p>
+		<p ng-click="subtopic = 2;" class="{{ subtopic == 2 ? 'active' : '' }}">Suscripción</p>
+		<p ng-click="subtopic = 3;" class="{{ subtopic == 3 ? 'active' : '' }}" ng-show="session.getCurrentUser().dias_restantes > 0">Consulta</p>
+		<hr/>
+		<p ng-click="session.logout()">Salir</p>
+	</div>
+
+	<div class="page">
+		<div ng-if="subtopic == 1">
+			Mi perfil
+		</div>
+
+		<div ng-if="subtopic == 2">
+			<div class="comprar_suscripcion" ng-if="session.getCurrentUser().dias_restantes <= 0">
+				Número de días 
+				<select ng-model="compra.suscripcion.dias">
+					<option>30</option>
+					<option>60</option>
+					<option>90</option>
+				</select>
+				<button type="button" class="btn btn-primary" ng-disabled="!compra.suscripcion.dias" ng-click="comprar_suscripcion(compra.suscripcion.dias);">Comprar</button>
+			</div>
+
+			<div class="historial_suscripciones" ng-if="session.getCurrentUser().suscripciones">
+				<h4>Historial de suscripciones</h4>
+				<table class="table table-striped historial_suscripciones">
+					<thead>
+						<th>Número de días</th>
+						<th>Empieza</th>
+						<th>Termina</th>
+					</thead>
+					<tbody>
+						<tr ng-repeat="s in session.getCurrentUser().suscripciones">
+							<td>{{ s.dias }} días</td>
+							<td>{{ s.empieza }}</td>
+							<td>{{ s.termina }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="chat" ng-if="subtopic == 3" ng-init="$parent.isChatting = false;">
+			<div ng-show="!$parent.isChatting" class="chat-selection">
+				<p>Selecciona un área</p>
+				<select ng-model="$parent.chat_info.area" ng-init="cargar_areas()" ng-change="$parent.chat_info.medico = null;">
+					<option ng-repeat="a in areas" value="{{ a.id }}">{{ a.nombre }}</option>
+				</select>
+				
+				<p ng-show="$parent.chat_info.area">Selecciona un médico</p>
+				<select ng-show="$parent.chat_info.area" ng-model="$parent.chat_info.medico" ng-init="cargar_medicos()">
+					<option ng-repeat="m in medicos | area:$parent.chat_info.area" value="{{ m.id }}">{{ m.nombre_completo }}</option>
+				</select>
+
+				<button type="button" class="btn btn-primary btn-block" ng-disabled="!$parent.chat_info.area || !$parent.chat_info.medico" ng-click="$parent.isClosed = false; go_chat($parent.chat_info);">Chatear</button>
+			</div>
+
+			<button ng-show="$parent.isChatting" class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="$parent.isClosed = true; $parent.isChatting = false;">&larr; Volver</button>
+
+			<div ng-show="$parent.isChatting" class="chat-window">
+				<div class="mensajes">
+					<p class="cargar-mas" ng-click="cargar_mas()">Cargar más</p>
+					<div class="mensaje" ng-repeat="m in chat.mensajes">
+						<div class="bubble {{ m.owner == session.getCurrentUser().usuario ? 'derecha' : 'izquierda' }}">
+							<b><small>{{ m.owner_name }} {{ m.hora_str || 'ahora' }}:</small></b> <br/>
+							{{ m.html }}
+						</div>
+					</div>
+				</div>
+
+				<textarea ng-model="$parent.chat_info.mensaje" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
+
+				<div class="botones">
+					<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje">Enviar</button>
+					<button type="button" class="btn-imagen">Adjuntar imagen</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

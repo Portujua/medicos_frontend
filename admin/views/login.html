@@ -1,0 +1,50 @@
+<form class="login" ng-submit="login()">
+	<p class="text-center">
+		<img src="img/logo.png" style="width: 50%;" />
+	</p>
+	<p class="login_alert hidden">Usuario o contraseña incorrecta</p>
+
+	<!-- Campos de mentira para engañar a chrome y que no haga el autofill -->
+	<input type="text" name="prevent_autofill" id="prevent_autofill" value="" style="display:none;" />
+	<input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
+
+	<input type="text" ng-model="$parent.login_form.username" placeholder="Usuario" />
+	<input type="password" ng-model="$parent.login_form.password" placeholder="Contraseña" />
+
+	<button type="submit" name="submit" class="btn btn-primary">Entrar</button>
+
+	<p class="text-right" style="cursor:pointer;" data-toggle="modal" data-target="#olvide_contrasena_modal">¿Olvidó su contraseña?</p>
+</form>
+
+
+<div id="olvide_contrasena_modal" class="modal fade" role="dialog">
+<div class="modal-dialog">
+
+	<!-- Modal content-->
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title titulo">Olvido de contraseña</h4>
+		</div>
+
+		<div class="modal-body">
+			<div class="alert alert-danger" role="alert" ng-show="error_olvido_clave">
+				{{ error_olvido_clave }}
+			</div>
+
+			<div class="alert alert-success" role="alert" ng-show="msg_clave_olvidada">
+				{{ msg_clave_olvidada }}
+			</div>
+
+			<p ng-hide="msg_clave_olvidada">Introduzca su nombre de usuario</p>
+			<p ng-hide="msg_clave_olvidada"><input ng-model="$parent.username_forgot_password" type="text" maxlength="128" /></p>
+		</div>
+
+		<div class="modal-footer">
+			<button class="btn btn-primary" ng-click="enviar_correo_recuperacion()">Enviar</button>
+			<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+		</div>
+	</div>
+
+</div>
+</div>

@@ -1,6 +1,6 @@
 <?php
-	trait Login {
-		public function actualizar_hora_sesion()
+    trait Login {
+        public function actualizar_hora_sesion()
         {
             @session_start();
             $_SESSION['login_time'] = time();
@@ -25,15 +25,31 @@
         public function login($post)
         {
             $query = $this->db->prepare("
-                select u.id as id, u.usuario as username, u.nombre as nombre, u.apellido as apellido, u.cedula as cedula, u.email as email, u.telefono as tlf, (select d.nombre from Personal_Departamento as pd, Departamento as d where pd.departamento=d.id and pd.personal=u.id limit 1) as departamento,
-                    (u.usuario in ".$this->admin_usernames.") as es_admin
-                from Personal as u
-                where u.usuario=:username and u.contrasena=:password and u.estado=1
+                select 
+                    u.id as id, 
+                    u.usuario as usuario, 
+                    u.nombre as nombre, 
+                    u.apellido as apellido, 
+                    concat(u.nombre, ' ', u.apellido) as nombre_completo,
+                    u.cedula as cedula, 
+                    u.tipo_cedula as tipo_cedula, 
+                    u.email as email, 
+                    u.sexo as sexo,
+                    u.estado_civil as estado_civil,
+                    u.direccion as direccion,
+                    u.lugar as lugar_id,
+                    date_format(u.fecha_nacimiento, '%d/%m/%Y') as fecha_nacimiento, 
+                    date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
+                    (
+                        case when (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) is not null then (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) else -1 end
+                    ) as dias_restantes
+                from Paciente as u
+                where upper(u.usuario)=:username and u.contrasena=:password and u.estado=1
                 limit 1
             ");
 
             $query->execute(array(
-                ":username" => $post['username'],
+                ":username" => strtoupper($post['username']),
                 ":password" => $post['password']
             ));
 
@@ -41,36 +57,36 @@
 
             if (count($u) > 0)
             {
-                /* Obtengo los permisos */
                 $user = $u[0];
-                $user['es_admin'] = $user['es_admin'] == "1" ? true : false;
 
-                $query_root = "
-                    select nombre
-                    from Permiso as p
-                ";
-
-                $query_no_root = "
-                    select nombre
-                    from Permiso_Asignado as pa, Permiso as p
-                    where pa.permiso=p.id and pa.usuario=:uid
-                ";
-
-                $query = null;
-
-                if ($user['es_admin'])
-                    $query = $this->db->prepare($query_root);
-                else
-                    $query = $this->db->prepare($query_no_root);
+                /* Obtengo los telefonos */
+                $query = $this->db->prepare("
+                    select *
+                    from Telefono 
+                    where paciente=:pid
+                ");
 
                 $query->execute(array(
-                    ":uid" => $user['id']
+                    ":pid" => $user['id']
                 ));
 
-                $permisos = $query->fetchAll();
+                $user['telefonos'] = $query->fetchAll();
 
-                foreach ($permisos as $p)
-                    $user[$p['nombre']] = 1;
+                /* Obtengo loas suscripciones */
+                $query = $this->db->prepare("
+                    select 
+                        date_format(empieza, '%d/%m/%Y') as empieza,
+                        date_format(termina, '%d/%m/%Y') as termina,
+                        datediff(termina, empieza) as dias
+                    from Suscripcion
+                    where paciente=:pid
+                ");
+
+                $query->execute(array(
+                    ":pid" => $user['id']
+                ));
+
+                $user['suscripciones'] = $query->fetchAll();
 
                 /* Obtengo la ultima conexion */
                 $query = $this->db->prepare("
@@ -114,5 +130,5 @@
             else
                 return json_encode(array("error" => 1));
         }
-	}
+    }
 ?>

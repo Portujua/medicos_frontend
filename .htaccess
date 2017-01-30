@@ -21,4 +21,9 @@ satisfy all
 RewriteEngine on
 
 # Reglas para la API
-RewriteRule ^api/personal$ /medicos/php/run.php?fn=cargar_personal [QSA,L]
+RewriteRule ^api/lugares$ /medicos/php/run.php?fn=cargar_lugares [QSA,L]
+RewriteRule ^api/telefonos/tipos$ /medicos/php/run.php?fn=cargar_tipos_telefonos [QSA,L]
+RewriteRule ^api/medicos$ /medicos/admin/php/run.php?fn=cargar_medicos [QSA,L]
+RewriteRule ^api/areas$ /medicos/admin/php/run.php?fn=cargar_areas [QSA,L]
+
+RewriteRule ^api/check/(.+)/(.+)$ /medicos/php/run.php?fn=check_$1&val=$2 [QSA,L]

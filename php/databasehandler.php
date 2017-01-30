@@ -29,13 +29,13 @@
             {
                 $this->username = "root";
                 $this->password = "21115476";
-                $this->dsn = "mysql:dbname=soincopy;host=localhost";
+                $this->dsn = "mysql:dbname=medicos;host=localhost";
             }
             elseif ($this->connect_to == "main")
             {
                 $this->username = "salazars_eduardo";
                 $this->password = "21115476";
-                $this->dsn = "mysql:dbname=salazars_soincopy;host=localhost";
+                $this->dsn = "mysql:dbname=salazars_medicos;host=localhost";
             }
             elseif ($this->connect_to == "test")
             {

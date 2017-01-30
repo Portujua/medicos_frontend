@@ -1,0 +1,47 @@
+<div class="navbar container" ng-show="loginService.isLoggedIn()">
+	<a href="./#/"><img src="img/logo.png" /></a>
+
+	<div class="navbar-right">
+		<strong>{{ loginService.getCurrentUser().nombre + " " + loginService.getCurrentUser().apellido }}</strong> <span class="glyphicon glyphicon-off pull-right" ng-click="logout()" style="color: #c9302c !important; border: none;" aria-hidden="true" title="Cerrar sesión"></span>
+
+		<p>
+			<small>Última visita: {{ loginService.getCurrentUser().ultima_visita.fecha.length > 0 ? loginService.getCurrentUser().ultima_visita.fecha + ' a las ' + loginService.getCurrentUser().ultima_visita.hora : 'Nunca' }}</small>
+		</p>
+	</div>
+
+	<div class="navbar-center">
+		<div class="btn-group">
+			<button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-show="loginService.getCurrentUser().es_admin">
+				Administración <span class="caret"></span>
+			</button>
+
+			<ul class="dropdown-menu">
+				<a href="./#/medicos">
+					<li>Médicos</li>
+				</a>
+				<a href="./#/areas">
+					<li>Areas</li>
+				</a>
+			</ul>
+		</div>
+
+		<!-- <div class="btn-group">
+			<button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-show="loginService.getCurrentUser().es_medico">
+				Menú <span class="caret"></span>
+			</button>
+
+			<ul class="dropdown-menu">
+				<a href="./#/pacientes">
+					<li>Pacientes</li>
+				</a>
+				<a href="./#/citas">
+					<li>Citas</li>
+				</a>
+			</ul>
+		</div> -->
+	</div>
+</div>
+
+<hr style="border-top: 2px solid #ddd;" />
+
+<a href="" ng-click="cerrar_seccion()" class="cerrar_seccion" ng-show="!enInicio"><span aria-hidden="true">&times;</span></a>

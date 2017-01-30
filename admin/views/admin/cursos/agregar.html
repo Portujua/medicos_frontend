@@ -1,0 +1,27 @@
+<form class="container" name="agregar" ng-controller="Curso" ng-submit="registrar_curso()" novalidate>
+	<div class="register-form">
+		<p class="btn-volver">
+			<a class="btn btn-link" href="./#/cursos">&larr; Volver</a>
+		</p>
+
+		<h1 style="font-size: 20px;">Cursos &rarr; {{ editar ? 'Editar' : 'Agregar' }}</h1>
+
+		<p><small>(*) Campos obligatorios</small></p>
+
+		<div class="fila">
+			<p>Nombre (*)</p>
+			<input type="text" ng-model="curso.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
+
+			<div class="tooltip-error" ng-if="agregar.nombre.$error.required && agregar.nombre.$dirty">
+				Debes completar este campo
+
+				<span class="tooltip-arrow"></span>
+			</div>
+		</div>
+
+
+		<div class="fila text-center">
+			<button type="submit" class="btn btn-primary" ng-disabled="agregar.$invalid">Aceptar</button>
+		</div>
+	</div>
+</form>

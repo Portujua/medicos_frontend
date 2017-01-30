@@ -12,6 +12,14 @@ body {
 	overflow-x: hidden;
 }
 
+.ui-autocomplete {
+	transition: none !important;
+
+	* {
+		transition: none !important;
+	}
+}
+
 .ng-animate {
 	&.ng-leave {
 		&.ng-leave-active {
@@ -36,6 +44,119 @@ body {
 
 		&.ng-leave-active {
 			/* Final cuando sale */
+		}
+	}
+}
+
+.register-form {
+	width: 90%;
+	margin-left: 5%;
+	display: inline-block;
+
+	.table {
+		th, td {
+			text-align: center;
+		}
+
+		input[type=number] {
+			border: none;
+		    text-align: center;
+		    outline: none;
+		    width: 80px;
+
+		    &:hover {
+		    	background-color: #eee;
+		    }
+		}
+
+		input[type=text] {
+			border: 1px solid #ddd;
+			padding: 0px 7px;
+		    outline: none;
+
+		    &:hover {
+		    	background-color: #eee;
+		    }
+		}
+
+		select {
+			border: 1px solid #aaa;
+		    text-align: center;
+		    outline: none;
+		    width: 150px;
+		}
+	}
+
+	.fila {
+		width: 100%;
+		float: left;
+		height: 35px;
+		margin-bottom: 20px;
+
+		p {
+			text-align: right;
+			line-height: 30px;
+			width: 25%;
+			padding-right: 15px;
+			float: left;
+		}
+
+		input, select {
+			width: 75%;
+			float: left;
+			padding: 8px 10px;
+			background-color: white;
+			border: none;
+			border-bottom: 1px solid #ccc;
+			border-radius: 5px;
+			outline: none !important;
+
+			&:focus {
+				border-bottom: 1px solid #333;
+			}
+
+			&.ng-invalid { 
+				border-bottom: 1px solid red !important;
+				background-color: #FBE6F2 !important;
+			}
+
+			&.ng-valid { 
+				border-bottom: 1px solid green !important; 
+				/*background-color: #e8fbe6 !important;*/
+				background-color: white !important;
+			}
+
+			&.ng-pristine { 
+				border-bottom: 1px solid #ccc !important; 
+				background-color: white !important;
+			}
+		}
+
+		input[type=file] {
+			float: left;
+			width: 35%;
+			margin-right: 10%;
+		}
+
+		.btn-upload {
+			width: 30% !important;
+			float: left;
+		}
+
+		textarea {
+			width: 75%;
+			height: 110px;
+			float: left;
+			padding: 8px 10px;
+			background-color: white;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			outline: none !important;
+			resize: none;
+
+			&:focus {
+				border: 1px solid #333;
+			}
 		}
 	}
 }
@@ -68,7 +189,7 @@ body {
 			width: 80%;
 			margin: 0 auto;
 
-			li {
+			.menuitem {
 				padding: 15px 20px;
 				text-transform: uppercase;
 				list-style: none;
@@ -76,9 +197,69 @@ body {
 				color: @link_color;
 				border-top: 1px solid transparent;
 				font-size: 14px;
+				cursor: pointer;
 
 				&.active, &:hover {
 					border-top: 1px solid @link_color;
+				}
+			}
+
+			.navbar-right {
+				.dropdown:nth-child(1) {
+					#login-dp {
+						width: 200px;
+
+						a:hover {
+							text-decoration: none !important;
+						}
+
+						li:not(.divider) {
+							padding: 8px 15px;
+							color: black;
+							text-decoration: none;
+							cursor: pointer;
+							font-size: 12px;
+							text-transform: uppercase;
+						}
+					}
+				}
+
+				.dropdown:nth-child(2) {
+					#login-dp {
+						width: 300px;
+						padding: 15px;
+
+						button {
+							transition: none;
+							background: none;
+							border: none;
+							background-color: @link_color;
+
+							&:hover {
+								background-color: @link_color;
+							}
+						}
+					}
+				}
+			}
+
+			#login-dp:nth-of-type(1) {
+				
+			}
+
+			#login-dp:nth-of-type(4) {
+				width: 300px;
+				padding: 15px;
+
+				button {
+					transition: none;
+					background: none;
+					border: none;
+					background-color: @link_color;
+
+					&:hover {
+						background-color: @link_color;
+					}
 				}
 			}
 		}
@@ -418,6 +599,169 @@ body {
 			font-size: 14px;
 		    text-transform: uppercase;
 		    padding: 10px 30px;
+		}
+	}
+}
+
+.form-registro {
+	width: 100%;
+}
+
+.perfil {
+	@sidebar_width: 20%;
+	display: inline-block;
+	width: 100%;
+
+	.sidebar {
+		width: @sidebar_width;
+		float:left;
+		background-color: @link_color;
+		color: white;
+
+		hr {
+			border-color: white;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		p {
+			text-transform: uppercase;
+			font-size: 14px;
+			padding: 10px;
+			cursor: pointer;
+			margin-bottom: 0px;
+
+			&:hover {
+				background-color: #6cc5c2;
+			}
+
+			&.active {
+				background-color: #179a96 !important;
+			}
+
+			&:first-of-type {
+				margin-top: 10px;
+			}
+
+			&:last-of-type {
+				margin-bottom: 10px;
+			}
+		}
+	}
+
+	.page {
+		width: calc(100% - @sidebar_width);
+		float:left;
+		padding: 15px;
+
+		* {
+			transition: none !important;
+		}
+
+		.chat-selection {
+			width: 200px;
+
+			select {
+				width: 100%;
+				padding: 7px 15px;
+				margin-bottom: 10px;
+			}
+		}
+
+		.chat-window {
+			width: 100%;
+			background-color: #ddd;
+			border: 1px solid #333;
+
+			.mensajes {
+				width: 100%;
+				height: 400px;
+				border: 1px solid #333;
+				background-color: @link_color;
+				overflow-y: scroll;
+
+				.cargar-mas {
+					text-align: center;
+					font-size: 12px;
+					cursor: pointer;
+					color: white;
+					background-color: #179a96;
+					padding: 7px;
+				}
+
+				.mensaje {
+					width: 100%;
+					min-height: 30px;
+					margin-bottom: 6px;
+					float: left;
+
+					&:last-child {
+						margin-bottom: 0px;
+					}
+					
+					.bubble {
+						background-color: #179a96;
+						display: inline-block;
+						padding: 8px 10px;
+						border-radius: 10px;
+						color: #eee;
+
+						font-size: 13px;
+
+						&.izquierda {
+							float: left;
+							margin-left: 20px;
+						}
+
+						&.derecha {
+							float: right;
+							margin-right: 20px;
+						}
+					}
+				}
+			}
+
+			textarea {
+				width: 80%;
+				height: 100px;
+				padding: 8px;
+				resize: none;
+				border: none;
+				outline: none;
+				float: left;
+				border: 1px solid #333;
+				border-left: 2px solid #333;
+				border-bottom: 2px solid #333;
+			}
+
+			.btn-enviar {
+				font-weight: bold;
+				text-transform: uppercase;
+				font-size: 12px;
+				border: none;
+				width: 20%;
+				height: 70px;
+				float: left;
+				border: 1px solid #333;
+				border-right: 2px solid #333;
+				background-color: @link_color;
+				color: white;
+			}
+
+			.btn-imagen {
+				font-weight: bold;
+				text-transform: uppercase;
+				font-size: 12px;
+				border: none;
+				width: 20%;
+				height: 30px;
+				float: left;
+				border: 1px solid #333;
+				border-right: 2px solid #333;
+				border-bottom: 2px solid #333;
+				background-color: @link_color;
+				color: white;
+			}
 		}
 	}
 }

@@ -1,0 +1,34 @@
+# Evitar que se muestre el contenido de las carpetas
+Options -Indexes
+
+# Pagina de 404 not found
+ErrorDocument 404 /medicos/admin/404.html
+
+# Prohibir acceso a .htaccess
+<Files ~ “^.*\.([Hh][Tt][Aa])”>
+order allow,deny
+deny from all
+satisfy all
+</Files>
+
+RewriteEngine on
+
+# Prohibir acceso a carpeta bd
+RewriteRule ^bd.*$ /medicos/admin/ [R=301,L]
+
+# Reglas para la API
+RewriteRule ^api/lugares$ /medicos/admin/php/run.php?fn=cargar_lugares [QSA,L]
+RewriteRule ^api/lugares/parroquias$ /medicos/admin/php/run.php?fn=cargar_parroquias [QSA,L]
+RewriteRule ^api/medicos$ /medicos/admin/php/run.php?fn=cargar_medicos [QSA,L]
+RewriteRule ^api/pacientes$ /medicos/admin/php/run.php?fn=cargar_pacientes [QSA,L]
+RewriteRule ^api/telefonos/tipos$ /medicos/admin/php/run.php?fn=cargar_tipos_telefonos [QSA,L]
+RewriteRule ^api/areas$ /medicos/admin/php/run.php?fn=cargar_areas [QSA,L]
+
+RewriteRule ^api/citas/(.+)$ /medicos/admin/php/run.php?fn=cargar_citas&medico=$1 [QSA,L]
+RewriteRule ^api/lugar/(.+)$ /medicos/admin/php/run.php?fn=cargar_lugar&lid=$1 [QSA,L]
+RewriteRule ^api/medico/(.+)$ /medicos/admin/php/run.php?fn=cargar_medico&cedula=$1 [QSA,L]
+RewriteRule ^api/paciente/(.+)$ /medicos/admin/php/run.php?fn=cargar_paciente&cedula=$1 [QSA,L]
+
+RewriteRule ^api/check/(.+)/(.+)$ /medicos/admin/php/run.php?fn=check_$1&val=$2 [QSA,L]
+
+RewriteRule ^api/export/(.+)$ /medicos/admin/php/export.php?t=$1 [QSA,L]

@@ -29,6 +29,13 @@
 	    };
 	});
 
+	app.filter('reverse', function() {
+	  return function(items) {
+	  	if (!items) return null;
+	    return items.slice().reverse();
+	  };
+	});
+
 	app.filter('soloCategorias', function () {
 	    return function (items_) {
 	    	if (!items_) return null;
@@ -70,6 +77,20 @@
 	    	
 	    	for (var i = actual*nroResultados; i < actual*nroResultados+nroResultados; i++)
 	    		items.push(_items[i]);
+
+			return items;
+	    };
+	});
+
+	app.filter('area', function () {
+	    return function (_items, args) {
+	    	if (!_items) return null;
+
+	    	var items = [];
+	    	
+	    	for (var i = 0; i < _items.length; i++)
+	    		if (_items[i].areas.contains(args))
+	    			items.push(_items[i]);
 
 			return items;
 	    };

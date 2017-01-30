@@ -6,11 +6,240 @@
 
 	<div class="bottom">
 		<div class="navigation">
-			<a href="" onclick="scrollTo('.home')"><li class="active">inicio</li></a>
-			<a href="" onclick="scrollTo('.services')"><li>servicios</li></a>
-			<a href="" onclick="scrollTo('.doctors')"><li>doctores</li></a>
-			<a href="" onclick="scrollTo('.news')"><li>noticias</li></a>
-			<a href="" onclick="scrollTo('.aboutus')"><li>acerca de nosotros</li></a>
+			<a href="./#/" onclick="scrollTo('.home')"><li class="menuitem active">inicio</li></a>
+			<a href="./#/" onclick="scrollTo('.services')"><li class="menuitem">servicios</li></a>
+			<a href="./#/" onclick="scrollTo('.doctors')"><li class="menuitem">doctores</li></a>
+			<a href="./#/" onclick="scrollTo('.news')"><li class="menuitem">noticias</li></a>
+			<a href="./#/" onclick="scrollTo('.aboutus')"><li class="menuitem">acerca de nosotros</li></a>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown" ng-show="session.isLoggedIn()">
+					<a class="menuitem" href="./#/" class="dropdown-toggle" data-toggle="dropdown">
+						{{ session.getCurrentUser().nombre_completo }} <small>({{ session.getCurrentUser().dias_restantes > 0 ? session.getCurrentUser().dias_restantes + ' DÍAS' : 'GRATIS' }})</small> <span class="caret"></span>
+					</a>
+
+					<ul id="login-dp" class="dropdown-menu">
+						<a href="./#/perfil"><li>Mi perfil</li></a>
+						<li role="separator" class="divider"></li>
+						<li ng-click="session.logout()">Salir</li>
+					</ul>
+				</li>
+
+		        <li class="dropdown" ng-show="!session.isLoggedIn()">
+		          <a class="menuitem" href="./#/" class="dropdown-toggle" data-toggle="dropdown">ENTRAR <span class="caret"></span></a>
+					<ul id="login-dp" class="dropdown-menu">
+						<li>
+							<div class="row">
+								<div class="col-md-12">
+									<form class="form" role="form" accept-charset="UTF-8" id="login-nav" name="form">
+										<div class="form-group">
+											<label class="sr-only" for="exampleInputEmail2">Usuario</label>
+											<input type="text" tabindex="1" class="form-control" id="exampleInputEmail2" name="email" placeholder="Usuario" required ng-model="$parent.loginform.username" autofocus>
+										</div>
+										<div class="form-group">
+											<label class="sr-only" for="exampleInputPassword2">Contraseña</label>
+											<input type="password" tabindex="2" class="form-control" id="exampleInputPassword2" name="password" placeholder="Contraseña" required ng-model="$parent.loginform.password">
+                                            <div class="help-block text-right"><a href="./#/">Olvidaste la contraseña?</a></div>
+										</div>
+										<div class="form-group">
+											<button type="button" tabindex="3" ng-disabled="form.$invalid || form.$pristine" class="btn btn-primary btn-block" ng-click="login()">Entrar</button>
+										</div>
+									 </form>
+								</div>
+								<div class="bottom text-center" style="border: none;">
+									Eres nuevo? <a href="./#/" data-toggle="modal" data-target=".register-modal"><b>Registrate</b></a>
+								</div>
+							 </div>
+						</li>
+					</ul>
+		        </li>
+		      </ul>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade register-modal" role="dialog">
+	<div class="modal-dialog">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Registro de paciente</h4>
+				<small>(*) Campos obligatorios</small>
+			</div>
+
+			<form class="form-registro" name="agregar" ng-controller="Paciente" ng-submit="registrar_paciente()" novalidate>
+				<div class="modal-body">
+					<div class="register-form">
+						<div class="fila">
+							<p>Cédula (*)</p>
+
+							<div style="width: 50px; float: left;">
+								<select class="selectpicker" data-width="100%" ng-model="paciente.tipo_cedula" name="tipo_cedula" required ts-select-fix ng-disabled="editar">
+									<option ng-repeat="s in ['V', 'E']">{{ s }}</option>
+								</select>
+							</div>
+
+							<input type="text" ng-model="paciente.cedula" name="cedula" ng-minlength=0 ng-maxlength=32 ng-init="paciente.cedula = ''" unique-bd="cedula_paciente" ng-model-options="{ updateOn: 'blur' }" placeholder="Cédula" required ng-disabled="editar" ng-pattern="/^[0-9]+$/" style="width: calc(75% - 50px);" />
+
+							<div class="tooltip-error" ng-if="agregar.cedula.$error.required && agregar.cedula.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+
+							<div class="tooltip-error" ng-if="agregar.cedula.$error.unique && agregar.cedula.$dirty">
+								Cédula ya existente.
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila">
+							<p>Nombre (*)</p>
+							<input type="text" ng-model="paciente.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
+
+							<div class="tooltip-error" ng-if="agregar.nombre.$error.required && agregar.nombre.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila">
+							<p>Segundo Nombre</p>
+							<input type="text" ng-model="paciente.snombre" name="snombre" ng-minlength=0 ng-maxlength=32 ng-init="paciente.snombre = ''" placeholder="Segundo nombre" />
+						</div>
+
+						<div class="fila">
+							<p>Apellido (*)</p>
+							<input type="text" ng-model="paciente.apellido" name="apellido" ng-minlength=1 ng-maxlength=32 required placeholder="Apellido" />
+
+							<div class="tooltip-error" ng-if="agregar.apellido.$error.required && agregar.apellido.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila">
+							<p>Segundo Apellido</p>
+							<input type="text" ng-model="paciente.sapellido" name="sapellido" ng-minlength=0 ng-maxlength=32 ng-init="paciente.sapellido = ''" placeholder="Segundo apellido" />
+						</div>
+
+						<div class="fila">
+							<p>Fecha de Nacimiento (*)</p>
+							<div class="datepicker-nacimiento" style="width: 100%;">
+								<input type="text" id="fecha_nac" class="form-control" ng-model="paciente.fecha_nacimiento" name="fecha_nac" style="font-size: 11px;" readonly required />
+							</div>
+
+							<script type="text/javascript">
+								$('.datepicker-nacimiento input').datepicker({
+									format: 'dd/mm/yyyy',
+								});
+							</script>
+
+							<div class="tooltip-error" ng-if="agregar.fecha_nac.$error.required && agregar.fecha_nac.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila" ng-init="cargar_lugares()">
+							<p>Parroquia (*)</p>
+							<input type="text" ng-model="paciente.lugar" name="lugar" ng-minlength=10 />
+
+							<!--<select class="selectpicker" data-live-search="true" data-width="75%" ng-model="paciente.lugar" name="lugar" required ts-select-fix>
+								<option ng-repeat="lugar in lugares" value="{{ lugar.id }}" ng-if="lugar.tipo == 'parroquia'">{{ lugar.nombre_completo }}</option>
+							</select>-->
+						</div>
+
+						<div class="fila">
+							<p>Dirección (*)</p>
+							<input type="text" ng-model="paciente.direccion" name="direccion" ng-minlength=0 ng-maxlength=256 placeholder="Ej: Bloque 19, Piso 3, Apto. 319" />
+						</div>
+
+						<div class="fila">
+							<p>Sexo (*)</p>
+							<select class="selectpicker" data-width="75%" ng-model="paciente.sexo" name="sexo" required ts-select-fix>
+								<option ng-repeat="s in ['Masculino', 'Femenino']">{{ s }}</option>
+							</select>
+						</div>
+
+						<div class="fila">
+							<p>Estado civil (*)</p>
+							<select class="selectpicker" data-width="75%" ng-model="paciente.estado_civil" name="estado_civil" required ts-select-fix>
+								<option ng-repeat="s in ['Soltero/a', 'Comprometido/a', 'Casado/a', 'Divorciado/a', 'Viudo/a']">{{ s }}</option>
+							</select>
+						</div>
+
+						<div class="fila">
+							<p>Correo electrónico</p>
+							<input type="email" ng-model="paciente.email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" />
+						</div>
+
+						<div class="fila">
+							<p>Usuario</p>
+							<input type="text" ng-model="paciente.usuario" name="usuario" ng-minlength=5 ng-maxlength=32 placeholder="Usuario" ng-model-options="{ updateOn: 'blur' }" unique-bd="usuario" autocomplete="off" />
+
+							<span ng-show="agregar.usuario.$error.minlength">El usuario debe contener al menos 5 caracteres</span>
+							<span ng-show="agregar.usuario.$error.maxlength">Nombre de usuario muy largo!</span>
+							<span ng-show="agregar.usuario.$error.unique && paciente.usuario.length > 0">Nombre de usuario ya existente</span>
+						</div>
+
+						<div class="fila">
+							<p>Contraseña</p>
+							<input type="password" ng-model="paciente.contrasena" name="contrasena" ng-minlength=5 ng-maxlength=32 placeholder="Contraseña" autocomplete="new-password" />
+
+							<span ng-show="agregar.contrasena.$error.minlength">La contraseña debe contener al menos 5 caracteres</span>
+							<span ng-show="agregar.contrasena.$error.maxlength">Contraseña muy larga!</span>
+						</div>
+
+						<hr/>
+
+						<h4 ng-init="paciente.telefonos = []; cargar_tipos_telefonos();">
+							Teléfonos
+						</h4>
+
+						<div class="telefonos">
+							Tipo <br>
+							<select class="selectpicker" data-live-search="true" data-width="75%" ng-model="telefono.tipo" name="telefono_id" ts-select-fix>
+								<option ng-repeat="tipo in tipos_telefonos" value="{{ tipo.nombre }}">{{ tipo.nombre }}</option>
+							</select><br><br>
+
+							Número
+							<div style="width: 75%;">
+								<input type="text" id="nrotelefono" class="form-control" ng-model="telefono.tlf" name="nrotelefono" style="font-size: 11px;" />
+							</div> <br><br>
+
+							<button type="button" class="btn btn-default" ng-click="anadir_telefono()">
+								Añadir
+							</button>
+						</div>
+
+						<table class="table table-striped">
+							<thead>
+								<th>&nbsp;</th>
+								<th>Tipo</th>
+								<th>Número</th>
+							</thead>
+							<tbody>
+								<tr class="telefono" ng-repeat="telefono in paciente.telefonos">
+									<td><span ng-click="eliminar_telefono($index)" title="Eliminar">&times;</span></td>
+									<td>{{ telefono.tipo }}</td>
+									<td>{{ telefono.tlf }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>					
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success btn-outline" ng-disabled="agregar.$invalid">Registrar</button>
+					<button type="button" class="btn btn-danger btn-outline" data-dismiss="modal">Cerrar</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

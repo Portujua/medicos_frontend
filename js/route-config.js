@@ -5,6 +5,10 @@
 				templateUrl : "views/inicio.html"
 			})
 
+			.when("/perfil", {
+				templateUrl : "views/perfil.html"
+			})
+
 			.otherwise({redirectTo : "/"});
 	});
 }());

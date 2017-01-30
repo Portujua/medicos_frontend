@@ -1,0 +1,70 @@
+<div class="medicos container" ng-controller="Medico">
+	<h1 style="font-size: 20px;">Medicos</h1>
+	<p>
+		<a href="./#/medicos/agregar" class="btn btn-soincopy"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar</a><br/>
+
+		<div class="botones">
+			<div ng-show="p_">
+				<a class="btn btn-primary" href="./#/medicos/editar/{{ p_.cedula }}">
+					<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size: 8px;"></span> Editar
+				</a>
+			</div>
+		</div>
+	</p>
+
+	<div>	
+		<p>
+			Buscar medico <input type="text" class="input_busqueda" ng-model="busqueda" ng-init="busqueda = ''" placeholder="Use cualquier campo para buscar" />
+		</p>
+
+		<!--<p>
+			<a href="./api/export/medicos" target="_blank" class="btn btn-soincopy">Exportar a Excel</a>
+			<a href="./api/export/medicos_root" target="_blank" class="btn btn-soincopy">Exportar nombres y fechas de nacimiento</a>
+		</p>-->
+
+		<table class="table table-stripped" ng-init="cargar_medicos()">
+			<thead>
+				<th class="text-center">Nombre completo</th>
+				<th class="text-center">Cédula</th>
+				<th class="text-center">Teléfonos</th>
+				<th class="text-center">Correo electrónico</th>
+				<th class="text-center">Area(s)</th>
+			</thead>
+			<tbody ng-init="actual = 0;">
+				<tr ng-click="seleccionar(p)" ng-repeat="p in medicos | paginar:nroResultados+'|'+actual"
+					ng-if="p.id > 1 && p.id != loginService.getCurrentUser().id &&
+					(
+						p.nombre_completo.toUpperCase().indexOf(busqueda.toUpperCase()) != -1 ||
+						p.cedula.toUpperCase().indexOf(busqueda.toUpperCase()) != -1 ||
+						(p.email && p.email.toUpperCase().indexOf(busqueda.toUpperCase()) != -1) ||
+						p.direccion.toUpperCase().indexOf(busqueda.toUpperCase()) != -1 ||
+						p.lugar.toUpperCase().indexOf(busqueda.toUpperCase()) != -1
+					)
+
+					&& (p.estado == 1)
+					"
+					class="{{ p.estado == 0 ? 'bg-danger' : '' }} {{ p_.id == p.id ? 'bg-selected' : '' }}">
+					<td class="text-center">{{ p.nombre_completo }}</td>
+					<td class="text-center">{{ p.tipo_cedula }} - {{ p.cedula }}</td>
+					<td class="text-center">
+						<p ng-repeat="tlf in p.telefonos">
+							{{ tlf.tlf }} ({{ tlf.tipo }})
+						</p>
+					</td>
+					<td class="text-center">{{ p.email.toUpperCase() }}</td>
+					<td class="text-center">
+						<p ng-repeat="area in p.areas_">{{ area.nombre.toUpperCase() }}</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="text-center" ng-show="nroResultados < medicos.length">
+			<ul class="pagination">
+				<li ng-repeat="i in paginationCount(nroResultados, medicos.length)" class="{{ actual == i ? 'active' : '' }}">
+					<a href="" ng-click="$parent.actual = i;">{{ i + 1 }}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
