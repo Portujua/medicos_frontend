@@ -118,7 +118,19 @@
 
             return json_encode($areas);
         }
+        public function cargar_tiposuscripcion($post)
+        {
+            $query = $this->db->prepare("
+                select *
+                from Tipo_Suscripcion
+            ");
 
+            $query->execute();
+
+            $tsuscripcion = $query->fetchAll();
+
+            return json_encode($tsuscripcion);
+        }
         public function cargar_mensajes($post)
         {
             $n = intval($post['n']);

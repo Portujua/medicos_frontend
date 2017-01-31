@@ -20,6 +20,9 @@
 		$scope.cargar_pacientes = function(){
 			RESTService.getPacientes($scope);
 		}
+		$scope.cargar_tsuscripciones = function(){
+			RESTService.getTSuscripcion($scope);
+		}
 
 		$scope.cargar_areas = function(){
 			RESTService.getAreas($scope);
@@ -43,7 +46,21 @@
 			    }
 			});
 		}
-
+		$scope.ActualizarPaciente = function(paciente){
+			$.ajax({
+			    url: "php/run.php?fn=actpaciente",
+			    type: "POST",
+			    data: paciente,
+			    beforeSend: function(){},
+			    success: function(data){
+			    	console.log(data);
+			        $scope.safeApply(function(){
+			        	AlertService.showSuccess("El usuario ha sido actualizado");
+						LoginService.login({username: LoginService.getCurrentUser().usuario, password: LoginService.getCurrentUser().contrasena});
+			        })
+			    }
+			});
+		}
 		$scope.cargar_lugares = function(){
 			RESTService.getLugares($scope);
 		}
@@ -102,11 +119,11 @@
 			$scope.paciente.telefonos = aux;
 		}
 
-		$scope.comprar_suscripcion = function(dias){
+		$scope.comprar_suscripcion = function(tiposuscripcion){
 			$http({
 				method: 'POST',
 				url: "php/run.php?fn=agregar_suscripcion",
-				data: $.param({dias: dias, usuario: LoginService.getCurrentUser().id}),
+				data: $.param({tsuscripcion: tiposuscripcion , usuario: LoginService.getCurrentUser().id}),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then((response) => {
 				console.log(response)

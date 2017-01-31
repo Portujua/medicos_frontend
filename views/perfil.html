@@ -8,19 +8,127 @@
 	</div>
 
 	<div class="page">
+
 		<div ng-if="subtopic == 1">
-			Mi perfil
+			<form class="form-registro" name="agregar" novalidate>
+				<div class="modal-body">
+					<div class="register-form">
+						<div class="fila">
+							<p>Cédula (*)</p>
+
+							<p>{{ session.getCurrentUser().tipo_cedula }}-{{ session.getCurrentUser().cedula }}</p>
+						</div>
+
+						<div class="fila">
+							<p>Nombre (*)</p>
+							<input type="text" ng-init="paciente.nombre = session.getCurrentUser().nombre; paciente.id = session.getCurrentUser().id" ng-model="paciente.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
+
+							<div class="tooltip-error" ng-if="agregar.nombre.$error.required && agregar.nombre.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila">
+							<p>Segundo Nombre</p>
+							<input type="text" ng-model="paciente.snombre" name="snombre" ng-minlength=0 ng-maxlength=32 ng-init="paciente.snombre = session.getCurrentUser().segundo_nombre" placeholder="Segundo nombre" />
+						</div>
+
+						<div class="fila">
+							<p>Apellido (*)</p>
+							<input type="text" ng-model="paciente.apellido" ng-init="paciente.apellido = session.getCurrentUser().apellido" name="apellido" ng-minlength=1 ng-maxlength=32 required placeholder="Apellido" />
+
+							<div class="tooltip-error" ng-if="agregar.apellido.$error.required && agregar.apellido.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila">
+							<p>Segundo Apellido</p>
+							<input type="text" ng-model="paciente.sapellido" name="sapellido" ng-minlength=0 ng-maxlength=32 ng-init="paciente.sapellido = session.getCurrentUser().segundo_apellido" placeholder="Segundo apellido" />
+						</div>
+
+						<div class="fila">
+							<p>Fecha de Nacimiento (*)</p>
+							<div class="datepicker-nacimiento" style="width: 100%;">
+								<input type="text" id="fecha_nac" class="form-control" ng-model="paciente.fecha_nacimiento" ng-init="paciente.fecha_nacimiento = session.getCurrentUser().fecha_nacimiento" name="fecha_nac" style="font-size: 11px;" readonly required />
+							</div>
+
+							<script type="text/javascript">
+								$('.datepicker-nacimiento input').datepicker({
+									format: 'dd/mm/yyyy',
+								});
+							</script>
+
+							<div class="tooltip-error" ng-if="agregar.fecha_nac.$error.required && agregar.fecha_nac.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
+						</div>
+
+						<div class="fila">
+							<p>Correo electrónico</p>
+							<input type="email" ng-model="paciente.email" ng-init="paciente.email = session.getCurrentUser().email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" />
+						</div>
+
+						<!-- <hr/>
+
+						<h4 ng-init="paciente.telefonos = []; cargar_tipos_telefonos();">
+							Teléfonos
+						</h4>
+
+						<div class="telefonos">
+							Tipo <br>
+							<select class="selectpicker" data-live-search="true" data-width="75%" ng-model="telefono.tipo" name="telefono_id" ts-select-fix>
+								<option ng-repeat="tipo in tipos_telefonos" value="{{ tipo.nombre }}">{{ tipo.nombre }}</option>
+							</select><br><br>
+
+							Número
+							<div style="width: 75%;">
+								<input type="text" id="nrotelefono" class="form-control" ng-model="telefono.tlf" name="nrotelefono" style="font-size: 11px;" />
+							</div> <br><br>
+
+							<button type="button" class="btn btn-default" ng-click="anadir_telefono()">
+								Añadir
+							</button>
+						</div>
+
+						<table class="table table-striped">
+							<thead>
+								<th>&nbsp;</th>
+								<th>Tipo</th>
+								<th>Número</th>
+							</thead>
+							<tbody>
+								<tr class="telefono" ng-repeat="telefono in paciente.telefonos">
+									<td><span ng-click="eliminar_telefono($index)" title="Eliminar">&times;</span></td>
+									<td>{{ telefono.tipo }}</td>
+									<td>{{ telefono.tlf }}</td>
+								</tr>
+							</tbody>
+						</table> -->
+					</div>					
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success btn-outline" ng-disabled="agregar.$invalid" ng-click="ActualizarPaciente(paciente)">Actualizar</button>
+					
+				</div>
+			</form>
 		</div>
 
 		<div ng-if="subtopic == 2">
 			<div class="comprar_suscripcion" ng-if="session.getCurrentUser().dias_restantes <= 0">
-				Número de días 
-				<select ng-model="compra.suscripcion.dias">
-					<option>30</option>
-					<option>60</option>
-					<option>90</option>
+				Tipo de suscripción 
+				<select ng-model="tiposuscripcion" ng-init="cargar_tsuscripciones()">
+					<option ng-repeat="i in tsuscripciones" value="{{ i.id }}"> {{ i.nombre }} ({{i.cant_cons}} Consultas) </option>
+
 				</select>
-				<button type="button" class="btn btn-primary" ng-disabled="!compra.suscripcion.dias" ng-click="comprar_suscripcion(compra.suscripcion.dias);">Comprar</button>
+				<button type="button" class="btn btn-primary" ng-disabled="!tiposuscripcion" ng-click="comprar_suscripcion(tiposuscripcion);">Comprar</button>
 			</div>
 
 			<div class="historial_suscripciones" ng-if="session.getCurrentUser().suscripciones">
@@ -30,12 +138,14 @@
 						<th>Número de días</th>
 						<th>Empieza</th>
 						<th>Termina</th>
+						<th>Cantidad de Consultas</th>
 					</thead>
 					<tbody>
 						<tr ng-repeat="s in session.getCurrentUser().suscripciones">
 							<td>{{ s.dias }} días</td>
 							<td>{{ s.empieza }}</td>
 							<td>{{ s.termina }}</td>
+							<td>{{ s.consultas }}</td>
 						</tr>
 					</tbody>
 				</table>

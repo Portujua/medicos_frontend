@@ -175,13 +175,13 @@
 						</div>
 
 						<div class="fila">
-							<p>Correo electrónico</p>
-							<input type="email" ng-model="paciente.email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" />
+							<p>Correo electrónico (*)</p>
+							<input type="email" ng-model="paciente.email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" required />
 						</div>
 
 						<div class="fila">
-							<p>Usuario</p>
-							<input type="text" ng-model="paciente.usuario" name="usuario" ng-minlength=5 ng-maxlength=32 placeholder="Usuario" ng-model-options="{ updateOn: 'blur' }" unique-bd="usuario" autocomplete="off" />
+							<p>Usuario (*)</p>
+							<input type="text" ng-model="paciente.usuario" name="usuario" ng-minlength=5 ng-maxlength=32 placeholder="Usuario" ng-model-options="{ updateOn: 'blur' }" unique-bd="usuario" autocomplete="off" required />
 
 							<span ng-show="agregar.usuario.$error.minlength">El usuario debe contener al menos 5 caracteres</span>
 							<span ng-show="agregar.usuario.$error.maxlength">Nombre de usuario muy largo!</span>
@@ -189,8 +189,8 @@
 						</div>
 
 						<div class="fila">
-							<p>Contraseña</p>
-							<input type="password" ng-model="paciente.contrasena" name="contrasena" ng-minlength=5 ng-maxlength=32 placeholder="Contraseña" autocomplete="new-password" />
+							<p>Contraseña (*)</p>
+							<input type="password" ng-model="paciente.contrasena" name="contrasena" ng-minlength=5 ng-maxlength=32 placeholder="Contraseña" autocomplete="new-password" required />
 
 							<span ng-show="agregar.contrasena.$error.minlength">La contraseña debe contener al menos 5 caracteres</span>
 							<span ng-show="agregar.contrasena.$error.maxlength">Contraseña muy larga!</span>

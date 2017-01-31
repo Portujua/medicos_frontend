@@ -110,7 +110,20 @@ create table Mensaje (
 create table Suscripcion (
 	id int not null auto_increment,
 	paciente int not null references Paciente(id),
+	tipo_suscripcion int not null references Tipo_Suscripcion(id),
 	empieza date not null,
 	termina date not null,
+	cant_cons_restantes int not null,
+	primary key(id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+
+create table Tipo_Suscripcion (
+	id int not null auto_increment,
+	nombre varchar(128) not null,
+	costo float not null,
+	descripcion varchar(128),
+	num_dias int not null,
+	cant_cons int not null,
 	primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;

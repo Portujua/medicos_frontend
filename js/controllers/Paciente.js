@@ -113,6 +113,7 @@
 						{
 							AlertService.showSuccess(obj.data.msg);
 					    	$location.path("/");
+					    	window.location.reload();
 					    }
 					    else
 					    	console.log(obj.data);

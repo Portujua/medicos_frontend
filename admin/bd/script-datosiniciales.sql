@@ -11,3 +11,8 @@ insert into Telefono (tlf, tipo, medico) values
 	("0412-5558283", 1, 1),
 	("0414-2491821", 1, 1),
 	("0212-4324831", 1, 1);
+
+insert into Tipo_Suscripcion (nombre, descripcion, costo, num_dias, cant_cons) values
+	("Basica", "Descripcion basica", 999, 30, 15),
+	("Pro", "Descripcion pro", 2999, 30, 25),
+	("Premium", "Descripcion premium", 5999, 30, 35);

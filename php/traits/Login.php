@@ -28,8 +28,10 @@
                 select 
                     u.id as id, 
                     u.usuario as usuario, 
-                    u.nombre as nombre, 
+                    u.nombre as nombre,
+                    u.segundo_nombre as segundo_nombre, 
                     u.apellido as apellido, 
+                    u.segundo_apellido as segundo_apellido,
                     concat(u.nombre, ' ', u.apellido) as nombre_completo,
                     u.cedula as cedula, 
                     u.tipo_cedula as tipo_cedula, 
@@ -37,7 +39,7 @@
                     u.sexo as sexo,
                     u.estado_civil as estado_civil,
                     u.direccion as direccion,
-                    u.lugar as lugar_id,
+                    (select nombre_completo from Lugar where id=u.lugar) as lugar,
                     u.contrasena as contrasena,
                     date_format(u.fecha_nacimiento, '%d/%m/%Y') as fecha_nacimiento, 
                     date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
@@ -76,11 +78,12 @@
                 /* Obtengo loas suscripciones */
                 $query = $this->db->prepare("
                     select 
-                        date_format(empieza, '%d/%m/%Y') as empieza,
-                        date_format(termina, '%d/%m/%Y') as termina,
-                        datediff(termina, empieza) as dias
-                    from Suscripcion
-                    where paciente=:pid
+                        date_format(s.empieza, '%d/%m/%Y') as empieza,
+                        date_format(s.termina, '%d/%m/%Y') as termina,
+                        datediff(s.termina, s.empieza) as dias,
+                        t.cant_cons as consultas
+                    from Suscripcion as s, Tipo_Suscripcion as t
+                    where paciente=:pid and s.tipo_suscripcion = t.id
                 ");
 
                 $query->execute(array(

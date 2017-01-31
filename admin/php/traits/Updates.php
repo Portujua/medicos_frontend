@@ -178,6 +178,7 @@
             return json_encode($json);
         }
 
+
         public function editar_paciente($post)
         {
             $json = array();
@@ -227,7 +228,6 @@
             $query->execute(array(
                 ":id" => $post['id']
             ));
-
             /* Añado los nuevos */
             if (isset($post['telefonos']))
                 foreach ($post['telefonos'] as $tlf)

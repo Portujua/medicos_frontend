@@ -57,17 +57,17 @@
 
             try {
                 $query = $this->db->prepare("
-                    insert into Suscripcion (paciente, empieza, termina)
-                    values (:paciente, now(), date_add(now(), interval :dias day))
+                    insert into Suscripcion (paciente, tipo_suscripcion, empieza, termina, cant_cons_restantes)
+                    values (:paciente,:tsuscripcion, now(), date_add(now(), interval (select num_dias from Tipo_Suscripcion where id = :tsuscripcion) day), (select cant_cons from Tipo_Suscripcion where id = :tsuscripcion))
                 ");
 
                 $query->execute(array(
                     ":paciente" => $post['usuario'],
-                    ":dias" => $post['dias']
+                    ":tsuscripcion" => $post['tsuscripcion']
                 ));
 
                 $json['ok'] = true;
-                $json['msg'] = "Se han añadido " . $post['dias'] . " días a su suscripción";
+                $json['msg'] = "Se han añadido su suscripción";
             }
             catch (Exception $e) {
                 $json['error'] = true;

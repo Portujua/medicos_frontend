@@ -9,6 +9,13 @@
 				});
 			},
 
+			getTSuscripcion: function(s){
+				$http.get("api/suscripcion/tipos").then(function(obj){
+					s.tsuscripciones = obj.data;
+					console.log(obj)
+					$timeout(function(){$('.selectpicker').selectpicker('refresh');}, 500);
+				});
+			},
 			getMedico: function(s, cedula){
 				$http.get("api/medicos").then(function(obj){
 					console.log(obj.data)
