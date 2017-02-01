@@ -47,8 +47,7 @@
                     date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
                     (
                         case when (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) is not null then (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) else -1 end
-                    ) as dias_restantes,
-                    0 as es_medico
+                    ) as dias_restantes
                 from Paciente as u
                 where upper(u.usuario)=:username and u.contrasena=:password and u.estado=1
                 limit 1

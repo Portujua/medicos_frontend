@@ -179,8 +179,14 @@
 			</div>
 
 			
+			<div ng-hide="session.getCurrentUser().es_medico">
+				<button ng-show="$parent.isChatting" class="btn btn-link"  ng-init="$parent.isClosed = false;" ng-click="$parent.isClosed = true; $parent.isChatting = false; ">&larr; Volver</button>
+			</div>
+			
 
-			<button ng-show="$parent.isChatting" class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="$parent.isClosed = true; $parent.isChatting = false; cerrar_consulta(); ">&larr; Cerrar Consulta</button>
+			<button ng-show="$parent.isChatting && session.getCurrentUser().es_medico==1" class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="cerrar_consulta($parent.chat_info);">&larr; Cerrar Consulta</button>
+			
+			<button ng-show="$parent.isChatting" ng-click="$parent.isClosed = true; $parent.isChatting = false;" class="btn btn-link">&larr; Volver</button>
 
 			<div ng-show="$parent.isChatting" class="chat-window">
 				<div class="mensajes">
@@ -193,10 +199,10 @@
 					</div>
 				</div>
 
-				<textarea ng-model="$parent.chat_info.mensaje" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
+				<textarea ng-model="$parent.chat_info.mensaje" ng-disabled="session.getCurrentUser().cons_restantes == 0" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
 
 				<div class="botones">
-					<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje">Enviar</button>
+					<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje || session.getCurrentUser().cons_restantes == 0">Enviar</button>
 					<button type="button" class="btn-imagen">Adjuntar imagen</button>
 				</div>
 			</div>

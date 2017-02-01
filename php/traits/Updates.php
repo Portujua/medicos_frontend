@@ -6,7 +6,7 @@
             $json = array();
 
             $query = $this->db->prepare("
-                update Suscripcion set cant_cons_restantes=cant_cons_restantes-1 where paciente=:pid
+                    update Suscripcion set cant_cons_restantes=cant_cons_restantes-1 where paciente=:pid and cant_cons_restantes>0
             ");
 
             $query->execute(array(
