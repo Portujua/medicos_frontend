@@ -47,7 +47,8 @@
                     date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
                     (
                         case when (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) is not null then (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) else -1 end
-                    ) as dias_restantes
+                    ) as dias_restantes,
+                    0 as es_medico
                 from Paciente as u
                 where upper(u.usuario)=:username and u.contrasena=:password and u.estado=1
                 limit 1
@@ -91,6 +92,7 @@
             if (count($u) > 0)
             {
                 $user = $u[0];
+                $user['es_medico'] = $user['es_medico'] == '1' ? true : false;
 
                 /* Obtengo los telefonos */
                 $query = $this->db->prepare("
@@ -105,22 +107,24 @@
 
                 $user['telefonos'] = $query->fetchAll();
 
-                /* Obtengo loas suscripciones */
-                $query = $this->db->prepare("
-                    select 
-                        date_format(s.empieza, '%d/%m/%Y') as empieza,
-                        date_format(s.termina, '%d/%m/%Y') as termina,
-                        datediff(s.termina, s.empieza) as dias,
-                        t.cant_cons as consultas
-                    from Suscripcion as s, Tipo_Suscripcion as t
-                    where paciente=:pid and s.tipo_suscripcion = t.id
-                ");
+                if ($user['es_medico']) 
+                {
+                    /* Obtengo loas suscripciones */
+                    $query = $this->db->prepare("
+                        select 
+                            date_format(empieza, '%d/%m/%Y') as empieza,
+                            date_format(termina, '%d/%m/%Y') as termina,
+                            datediff(termina, empieza) as dias
+                        from Suscripcion
+                        where paciente=:pid
+                    ");
 
-                $query->execute(array(
-                    ":pid" => $user['id']
-                ));
+                    $query->execute(array(
+                        ":pid" => $user['id']
+                    ));
 
-                $user['suscripciones'] = $query->fetchAll();
+                    $user['suscripciones'] = $query->fetchAll();
+                }
 
                 /* Obtengo la ultima conexion */
                 $query = $this->db->prepare("

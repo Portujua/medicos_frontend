@@ -202,5 +202,56 @@
 
             return json_encode($chat);
         }
+
+        public function cargar_pacientes($post, $query_extra = "")
+        {
+            $query = $this->db->prepare("
+                select
+                    p.id as id,
+                    p.nombre as nombre,
+                    p.segundo_nombre as segundo_nombre,
+                    p.apellido as apellido,
+                    p.segundo_apellido as segundo_apellido,
+                    concat(
+                        p.nombre, ' ',
+                        (case when p.segundo_nombre is not null then concat(p.segundo_nombre, ' ') else '' end),
+                        p.apellido,
+                        (case when p.segundo_apellido is not null then concat(' ', p.segundo_apellido) else '' end)
+                    ) as nombre_completo,
+                    p.cedula as cedula,
+                    p.tipo_cedula as tipo_cedula,
+                    p.email as email,
+                    p.usuario as usuario
+                from Paciente as p
+                where 1=1
+                ".$query_extra."
+            ");
+
+            $query->execute();
+            $pacientes = $query->fetchAll();
+
+            for ($i = 0; $i < count($pacientes); $i++)
+            {
+                $pacientes[$i]["snombre"] = $pacientes[$i]["segundo_nombre"];
+                $pacientes[$i]["sapellido"] = $pacientes[$i]["segundo_apellido"];
+
+                /* Telefonos */
+                $query = $this->db->prepare("
+                    select 
+                        t.tlf as tlf,
+                        tt.nombre as tipo
+                    from Telefono as t, Telefono_Tipo as tt
+                    where t.tipo=tt.id and t.paciente=:pid
+                ");
+
+                $query->execute(array(
+                    ":pid" => $pacientes[$i]['id']
+                ));
+
+                $pacientes[$i]['telefonos'] = $query->fetchAll();
+            }
+
+            return json_encode($pacientes);
+        }
 	}
 ?>

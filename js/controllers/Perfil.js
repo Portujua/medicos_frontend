@@ -210,8 +210,8 @@
 			$scope.isClosed = false;
 
 			$scope.chat_cargar_mensajes({
-				medico: info.medico, 
-				paciente: LoginService.getCurrentUser().id,
+				medico: !LoginService.getCurrentUser().es_medico ? info.medico : LoginService.getCurrentUser().id, 
+				paciente: !LoginService.getCurrentUser().es_medico ? LoginService.getCurrentUser().id : info.paciente,
 				n: 10,
 				last: -1
 			}).then((response) => {
@@ -251,8 +251,8 @@
 				method: 'POST',
 				url: "php/run.php?fn=agregar_mensaje",
 				data: $.param({
-					medico: $scope.chat_info.medico,
-					paciente: LoginService.getCurrentUser().id,
+					medico: !LoginService.getCurrentUser().es_medico ? $scope.chat_info.medico : LoginService.getCurrentUser().id, 
+					paciente: !LoginService.getCurrentUser().es_medico ? LoginService.getCurrentUser().id : $scope.chat_info.paciente,
 					mensaje: $scope.chat_info.mensaje,
 					owner: LoginService.getCurrentUser().usuario,
 					owner_name: LoginService.getCurrentUser().nombre + " " + LoginService.getCurrentUser().apellido
