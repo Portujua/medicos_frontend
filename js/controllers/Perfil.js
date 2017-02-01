@@ -138,7 +138,27 @@
 				}
 			})
 		}
+		$scope.cerrar_consulta = function(){
+			
+			console.log("entre");
+			$http({
+				method: 'POST',
+				url: "php/run.php?fn=cerrar_consulta",
+				data: $.param({usuario: LoginService.getCurrentUser().id}),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then((response) => {
+				console.log(response)
 
+				if (response.data.ok) {
+					AlertService.showSuccess(response.data.msg);
+					LoginService.login({username: LoginService.getCurrentUser().usuario, password: LoginService.getCurrentUser().contrasena});
+				}
+				else {
+					AlertService.showError("Ha ocurrido un error");
+					console.log(response.data.msg);
+				}
+			})
+		}
 		$scope.cargar_mas = function(){
 			if ($scope.chat.mensajes.length == 0) return;
 

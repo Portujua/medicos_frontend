@@ -24,6 +24,7 @@
 					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				}).then(function(obj){
 					var data = obj.data;
+					console.log(obj);
 					if (data.error)
 						AlertService.showError("Usuario o contraseña inválida");
 					else
