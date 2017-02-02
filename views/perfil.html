@@ -122,7 +122,7 @@
 		</div>
 
 		<div ng-if="subtopic == 2">
-			<div class="comprar_suscripcion" ng-if="session.getCurrentUser().dias_restantes <= 0">
+			<div class="comprar_suscripcion" ng-if="session.getCurrentUser().cons_restantes <= 0">
 				Tipo de suscripción 
 				<select ng-model="tiposuscripcion" ng-init="cargar_tsuscripciones()">
 					<option ng-repeat="i in tsuscripciones" value="{{ i.id }}"> {{ i.nombre }} ({{i.cant_cons}} Consultas) </option>
@@ -183,10 +183,13 @@
 				<button ng-show="$parent.isChatting" class="btn btn-link"  ng-init="$parent.isClosed = false;" ng-click="$parent.isClosed = true; $parent.isChatting = false; ">&larr; Volver</button>
 			</div>
 			
-
-			<button ng-show="$parent.isChatting && session.getCurrentUser().es_medico==1" class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="cerrar_consulta($parent.chat_info);">&larr; Cerrar Consulta</button>
+			<div ng-show="$parent.isChatting && session.getCurrentUser().es_medico==1">
+				
+				<button  class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="cerrar_consulta($parent.chat_info);">&larr; Cerrar Consulta</button>
 			
-			<button ng-show="$parent.isChatting" ng-click="$parent.isClosed = true; $parent.isChatting = false;" class="btn btn-link">&larr; Volver</button>
+				<button  ng-click="$parent.isClosed = true; $parent.isChatting = false;" class="btn btn-link">&larr; Volver</button>
+			</div>
+
 
 			<div ng-show="$parent.isChatting" class="chat-window">
 				<div class="mensajes">

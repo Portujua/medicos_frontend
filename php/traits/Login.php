@@ -41,12 +41,12 @@
                     u.direccion as direccion,
                     (select nombre_completo from Lugar where id=u.lugar) as lugar,
                     u.contrasena as contrasena,
-                    (select cant_cons_restantes from Suscripcion where paciente=u.id) as cons_restantes,
+                    (select cant_cons_restantes from Suscripcion where paciente=u.id order by empieza desc limit 1) as cons_restantes,
                     0 as es_medico,
                     date_format(u.fecha_nacimiento, '%d/%m/%Y') as fecha_nacimiento, 
                     date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
                     (
-                        case when (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) is not null then (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) else -1 end
+                        case when (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc limit 1) is not null then (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc limit 1) else -1 end
                     ) as dias_restantes
                 from Paciente as u
                 where upper(u.usuario)=:username and u.contrasena=:password and u.estado=1
