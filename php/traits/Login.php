@@ -106,7 +106,7 @@
 
                 $user['telefonos'] = $query->fetchAll();
 
-                if ($user['es_medico']) 
+                if (!$user['es_medico']) 
                 {
                     /* Obtengo loas suscripciones */
                     $query = $this->db->prepare("
