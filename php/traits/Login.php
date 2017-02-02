@@ -108,12 +108,13 @@
 
                 if (!$user['es_medico']) 
                 {
-                    /* Obtengo loas suscripciones */
+                    /* Obtengo las suscripciones */
                     $query = $this->db->prepare("
                         select 
                             date_format(empieza, '%d/%m/%Y') as empieza,
                             date_format(termina, '%d/%m/%Y') as termina,
-                            datediff(termina, empieza) as dias
+                            datediff(termina, empieza) as dias,
+                            cant_cons_restantes as consultas
                         from Suscripcion
                         where paciente=:pid
                     ");
