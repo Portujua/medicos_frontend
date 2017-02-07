@@ -221,5 +221,20 @@
 
             return json_encode($areas);
         }
+
+        public function cargar_suscripciones($post)
+        {
+        
+            $query = $this->db->prepare("
+                select *
+                from Tipo_Suscripcion
+            ");
+
+            $query->execute();
+
+            $suscripciones = $query->fetchAll();
+
+            return json_encode($suscripciones);
+        }
 	}
 ?>

@@ -1,0 +1,36 @@
+<div class="suscripciones container" ng-controller="Suscripcion">
+	<h1 style="font-size: 20px;">Suscripciones</h1>
+	<p>
+		<a href="./#/suscripciones/agregar" class="btn btn-soincopy"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar</a><br/>
+
+		<div class="botones">
+			<div ng-show="p_">
+				<a class="btn btn-primary" href="./#/suscripciones/editar/{{ p_.id }}">
+					<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size: 8px;"></span> Editar
+				</a>
+
+				<button class="btn btn-danger" ng-click="cambiar_estado(p_.id, 0)">
+					<span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> Eliminar
+				</button>
+			</div>
+		</div>
+	</p>
+
+	<div>	
+		<p>
+			Buscar suscripcion <input type="text" class="input_busqueda" ng-model="busqueda" ng-init="busqueda = ''" placeholder="Use cualquier campo para buscar" />
+		</p>
+		<table class="table table-stripped" ng-init="cargar_suscripciones()">
+			<thead>
+				<th class="text-center">Nombre</th>
+			</thead>
+			<tbody>
+				<tr ng-click="seleccionar(p)" ng-repeat="p in suscripciones"
+					ng-if="(p.nombre.indexOf(busqueda) != -1)"
+					class="'bg-danger' : '' }} {{ p_.id == p.id ? 'bg-selected' : '' }}">
+					<td class="text-center">{{ p.nombre }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

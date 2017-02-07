@@ -43,10 +43,20 @@
 			.when("/areas/agregar", {
 				templateUrl : "views/admin/areas/agregar.html"
 			})
+
 			.when("/areas/editar/:id", {
 				templateUrl : "views/admin/areas/agregar.html"
 			})
 
+			.when("/suscripciones", {
+				templateUrl : "views/admin/suscripciones/suscripciones.html"
+			})
+			.when("/suscripciones/editar/:id", {
+				templateUrl : "views/admin/suscripciones/agregar.html"
+			})
+			.when("/suscripciones/agregar", {
+				templateUrl : "views/admin/suscripciones/agregar.html"
+			})
 			.when("/citas", {
 				templateUrl : "views/admin/citas/citas.html"
 			})

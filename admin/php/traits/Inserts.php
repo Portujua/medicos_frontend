@@ -33,6 +33,26 @@
             return json_encode($json);
         }
 
+        public function agregar_suscripcion($post)
+        {
+            $json = array();
+
+            $query = $this->db->prepare("insert into Tipo_Suscripcion (nombre,costo,descripcion,num_dias,cant_cons) values (:nombre,:costo,:descripcion,:num_dias,:cant_cons)");
+
+            $query->execute(array(
+                ":nombre" => $post['nombre'],
+                ":costo" => $post['costo'],
+                ":descripcion" => $post['descripcion'],
+                ":num_dias" => $post['num_dias'],
+                ":cant_cons" => $post['cant_cons']
+            ));
+
+            $json["status"] = "ok";
+            $json["ok"] = true;
+            $json["msg"] = "El el plan fue añadido correctamente.";
+
+            return json_encode($json);
+        }
         public function agregar_medico($post)
         {
             $json = array();

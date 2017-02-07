@@ -68,6 +68,25 @@
 				});
 			},
 
+			getSuscripciones: function(s){
+				$http.get("api/suscripciones").then(function(obj){
+					s.suscripciones = obj.data;
+					$timeout(function(){$('.selectpicker').selectpicker('refresh');}, 500);
+				});
+			},
+
+			getSuscripcion: function(s, id){
+				$http.get("api/suscripciones").then(function(obj){
+					for (var i = 0; i < obj.data.length; i++){
+						
+						if (obj.data[i].id == id)
+							s.suscripcion = obj.data[i];
+					}
+			
+					$timeout(function(){$('.selectpicker').selectpicker('refresh');}, 500);
+				});
+			},
+
 			getCitas: function(s, medico){
 				$http.get(`api/citas/${medico}`).then(function(obj){
 					s.citas = obj.data;

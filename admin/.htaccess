@@ -23,6 +23,7 @@ RewriteRule ^api/medicos$ /medicos/admin/php/run.php?fn=cargar_medicos [QSA,L]
 RewriteRule ^api/pacientes$ /medicos/admin/php/run.php?fn=cargar_pacientes [QSA,L]
 RewriteRule ^api/telefonos/tipos$ /medicos/admin/php/run.php?fn=cargar_tipos_telefonos [QSA,L]
 RewriteRule ^api/areas$ /medicos/admin/php/run.php?fn=cargar_areas [QSA,L]
+RewriteRule ^api/suscripciones$ /medicos/admin/php/run.php?fn=cargar_suscripciones [QSA,L]
 
 RewriteRule ^api/citas/(.+)$ /medicos/admin/php/run.php?fn=cargar_citas&medico=$1 [QSA,L]
 RewriteRule ^api/lugar/(.+)$ /medicos/admin/php/run.php?fn=cargar_lugar&lid=$1 [QSA,L]

@@ -272,5 +272,35 @@
 
             return json_encode($json);
         }
+
+        public function editar_suscripcion($post)
+        {
+            $json = array();
+
+            $query = $this->db->prepare("
+                update Tipo_Suscripcion set 
+                    nombre=:nombre,
+                    costo=:costo,
+                    descripcion=:descripcion,
+                    num_dias=:num_dias,
+                    cant_cons=:cant_cons
+                where id=:id
+            ");
+
+            $query->execute(array(
+                ":id" => $post['id'],
+                ":nombre" => $post['nombre'],
+                ":costo" => $post['costo'],
+                ":descripcion" => $post['descripcion'],
+                ":num_dias" => $post['num_dias'],
+                ":cant_cons" => $post['cant_cons']
+            ));
+
+            $json["status"] = "ok";
+            $json["ok"] = true;
+            $json["msg"] = "La suscripcion " . $post['nombre'] . " fue modificada correctamente.";
+
+            return json_encode($json);
+        }
 	}
 ?>

@@ -1,0 +1,73 @@
+<form class="container" name="agregar" ng-controller="Suscripcion" ng-submit="registrar_suscripcion()" novalidate>
+	<div class="register-form">
+		<p class="btn-volver">
+			<a class="btn btn-link" href="./#/suscripciones">&larr; Volver</a>
+		</p>
+
+		<h1 style="font-size: 20px;">Suscripciones &rarr; {{ editar ? 'Editar' : 'Agregar' }}</h1>
+
+		<p><small>(*) Campos obligatorios</small></p>
+
+		<div class="fila">
+
+			<p>Nombre (*)</p>
+			<input type="text" ng-model="suscripcion.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
+
+			<div class="tooltip-error" ng-if="agregar.nombre.$error.required && agregar.nombre.$dirty">
+				Debes completar este campo
+
+				<span class="tooltip-arrow"></span>
+			</div>
+		</div>
+
+		<div class="fila">
+			<p>Costo (*)</p>
+			<input type="text" ng-model="suscripcion.costo" name="costo" ng-minlength=1 ng-maxlength=32 required placeholder="Costo" />
+
+			<div class="tooltip-error" ng-if="agregar.costo.$error.required && agregar.costo.$dirty">
+				Debes completar este campo
+
+				<span class="tooltip-arrow"></span>
+			</div>
+		</div>
+
+		<div class="fila">
+			<p>Descripcion (*)</p>
+			<input type="text" ng-model="suscripcion.descripcion" name="descripcion" ng-minlength=1 ng-maxlength=32 required placeholder="Descripcion" />
+
+			<div class="tooltip-error" ng-if="agregar.descripcion.$error.required && agregar.descripcion.$dirty">
+				Debes completar este campo
+
+				<span class="tooltip-arrow"></span>
+			</div>
+		</div>
+
+		<div class="fila">
+			<p>Cantidad de dias (*)</p>
+			<input type="text" ng-model="suscripcion.num_dias" name="num_dias" ng-minlength=1 ng-maxlength=32 required placeholder="Cantidad de dias" />
+
+			<div class="tooltip-error" ng-if="agregar.num_dias.$error.required && agregar.num_dias.$dirty">
+				Debes completar este campo
+
+				<span class="tooltip-arrow"></span>
+			</div>
+		</div>
+
+		<div class="fila">
+			<p>Cantidad de consultas (*)</p>
+			<input type="text" ng-model="suscripcion.cant_cons" name="cant_cons" ng-minlength=1 ng-maxlength=32 required placeholder="Cantidad de consultas" />
+
+			<div class="tooltip-error" ng-if="agregar.cant_cons.$error.required && agregar.cant_cons.$dirty">
+				Debes completar este campo
+
+				<span class="tooltip-arrow"></span>
+			</div>
+		</div>
+
+
+
+		<div class="fila text-center">
+			<button type="submit" class="btn btn-primary" ng-disabled="agregar.$invalid">Aceptar</button>
+		</div>
+	</div>
+</form>
