@@ -26,8 +26,9 @@
 			</thead>
 			<tbody>
 				<tr ng-click="seleccionar(p)" ng-repeat="p in suscripciones"
-					ng-if="(p.nombre.indexOf(busqueda) != -1)"
-					class="'bg-danger' : '' }} {{ p_.id == p.id ? 'bg-selected' : '' }}">
+					ng-if="(p.nombre.indexOf(busqueda) != -1) && (p.estado == 1)"
+
+					class="p.estado == 0 ? 'bg-danger' : '' }} {{ p_.id == p.id ? 'bg-selected' : '' }}">
 					<td class="text-center">{{ p.nombre }}</td>
 				</tr>
 			</tbody>

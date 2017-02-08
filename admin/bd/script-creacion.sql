@@ -125,5 +125,6 @@ create table Tipo_Suscripcion (
 	descripcion varchar(128),
 	num_dias int not null,
 	cant_cons int not null,
+	estado tinyint(1) default 1,
 	primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;

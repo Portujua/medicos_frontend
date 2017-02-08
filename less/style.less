@@ -149,7 +149,7 @@ body {
 			float: left;
 			padding: 8px 10px;
 			background-color: white;
-			border: 1px solid #ccc;
+			/*border: 1px solid #ccc;*/
 			border-radius: 5px;
 			outline: none !important;
 			resize: none;
@@ -669,15 +669,19 @@ body {
 		}
 
 		.chat-window {
+			border-radius: 8px;
+			padding: 2px;
 			width: 100%;
+			/*border-color: #ddd;
 			background-color: #ddd;
-			border: 1px solid #333;
+			border: 1px solid #333;*/
 
 			.mensajes {
+				padding: 7px;
 				width: 100%;
 				height: 400px;
-				border: 1px solid #333;
-				background-color: @link_color;
+				/*border: 1px solid #333;*/
+				background-color: white;
 				overflow-y: scroll;
 
 				.cargar-mas {
@@ -711,6 +715,7 @@ body {
 						&.izquierda {
 							float: left;
 							margin-left: 20px;
+							background-color: #12b9b4;
 						}
 
 						&.derecha {
@@ -721,9 +726,12 @@ body {
 				}
 			}
 
+			@alto_mensaje: 40px;
+
 			textarea {
+				border-radius: 8px;
 				width: 80%;
-				height: 100px;
+				height: @alto_mensaje;
 				padding: 8px;
 				resize: none;
 				border: none;
@@ -735,32 +743,43 @@ body {
 			}
 
 			.btn-enviar {
+				border-radius: 8px;
 				font-weight: bold;
 				text-transform: uppercase;
-				font-size: 12px;
+				font-size: 15px;
 				border: none;
-				width: 20%;
-				height: 70px;
+				width: 10%;
+				height: @alto_mensaje;
 				float: left;
-				border: 1px solid #333;
-				border-right: 2px solid #333;
+				/*border: 1px solid #333;
+				border-right: 2px solid #333;*/
 				background-color: @link_color;
 				color: white;
+
+				.glyphicon {
+					font-size: 16px;
+					text-align: center;
+				}
 			}
 
 			.btn-imagen {
+				border-radius: 8px;
 				font-weight: bold;
 				text-transform: uppercase;
-				font-size: 12px;
+				/*font-size: 12px;*/
 				border: none;
-				width: 20%;
-				height: 30px;
+				width: 10%;
+				height: @alto_mensaje;
 				float: left;
-				border: 1px solid #333;
+				/*border: 1px solid #333;
 				border-right: 2px solid #333;
-				border-bottom: 2px solid #333;
+				border-bottom: 2px solid #333;*/
 				background-color: @link_color;
 				color: white;
+				.glyphicon {
+					font-size: 16px;
+					text-align: center;
+				}
 			}
 		}
 	}

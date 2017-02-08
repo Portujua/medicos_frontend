@@ -302,5 +302,27 @@
 
             return json_encode($json);
         }
+
+
+        public function cambiar_estado_suscripcion($post)
+        {
+            $json = array();
+
+            $query = $this->db->prepare("
+                update Tipo_Suscripcion set estado=:estado where id=:pid
+            ");
+
+            $query->execute(array(
+                ":pid" => $post['id'],
+                ":estado" => $post['estado']
+            ));
+
+            $json["status"] = "ok";
+            $json["ok"] = true;
+            $json["msg"] = "La suscripcion fue ".($post['estado'] == 1 ? "habilitado" : "deshabilitado")." correctamente.";
+
+            return json_encode($json);
+        }
+
 	}
 ?>

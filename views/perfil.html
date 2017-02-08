@@ -202,11 +202,14 @@
 				</div>
 
 				<textarea ng-model="$parent.chat_info.mensaje" ng-disabled="session.getCurrentUser().cons_restantes == 0" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
-
-				<div class="botones">
-					<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje || session.getCurrentUser().cons_restantes == 0">Enviar</button>
-					<button type="button" class="btn-imagen">Adjuntar imagen</button>
-				</div>
+				<form action="./php/upload.php" method="post" enctype="multipart/form-data">
+					<div class="botones">
+						<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje || session.getCurrentUser().cons_restantes == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+						<!-- <input type="file" nv-file-select="" uploader="uploader"/>
+						<input type="submit" value="Subir archivo"/> -->
+						<button type="button" class="btn-imagen"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
