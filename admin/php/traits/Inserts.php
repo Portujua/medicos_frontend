@@ -97,6 +97,21 @@
                     )); 
                 }
 
+            /* Añado las nuevas */
+            if (isset($post['areas']))
+                foreach ($post['areas'] as $area)
+                {
+                   $query = $this->db->prepare("
+                        insert into Medico_Area (area, medico) 
+                        values (:area, :medico)
+                    ");
+
+                    $query->execute(array(
+                        ":area" => $area,
+                        ":medico" => $uid
+                    )); 
+                }
+
             $json["status"] = "ok";
             $json["ok"] = true;
             $json["msg"] = $post['nombre'] . " " . $post['apellido'] . " fue añadido correctamente.";

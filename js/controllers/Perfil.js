@@ -188,6 +188,7 @@
 
 		$scope.sumar_mensajes = function(ms){
 			var aux = [];
+			var d = false;
 
 			for (var k = 0; k < ms.length; k++) {
 				var c = true;
@@ -196,9 +197,16 @@
 					if ($scope.chat.mensajes[i].html == ms[k].html && $scope.chat.mensajes[i].hora_str == ms[k].hora_str)
 						c = false;
 
-				if (c)
+				if (c) {
 					$scope.chat.mensajes.push(ms[k]);
+					d = true;
+				}
 			}
+
+			if (d)
+				$timeout(() => {
+					$scope.autoscroll();
+				}, 100);
 
 			// Remuevo los 'ahora'
 			for (var i = 0; i < $scope.chat.mensajes.length; i++)
@@ -221,14 +229,11 @@
 				n: 10,
 				last: -1
 			}).then((response) => {
-				if ($scope.chat)
+				if ($scope.chat) {
 					$scope.sumar_mensajes(response.data.mensajes);
+				}
 				else
 					$scope.chat = response.data;
-				
-				$timeout(() => {
-					$scope.autoscroll();
-				}, 100);
 
 				$timeout(() => {
 					$scope.go_chat(info);
@@ -287,6 +292,15 @@
 			var newscrollHeight = parseInt($(".mensajes").css("height")) - 10;
 			
 			$(".mensajes").animate({ scrollTop: newscrollHeight }, 0); //Autoscroll to bottom of div
+		}
+
+		$scope.onSuccess = function(response){
+			if (response.data.ok)
+				AlertService.showSuccess(response.data.answer);
+			else {
+				AlertService.showError(response.data.answer);
+				console.log(response);
+			}
 		}
 
 		if ($routeParams.cedula)

@@ -50,8 +50,9 @@
                     ) as dias_restantes
                 from Paciente as u
                 where upper(u.usuario)=:username and u.contrasena=:password and u.estado=1
-                limit 1
+                
                 UNION
+
                 select 
                     u.id as id, 
                     u.usuario as usuario, 
@@ -72,13 +73,10 @@
                     1 as es_medico,
                     date_format(u.fecha_nacimiento, '%d/%m/%Y') as fecha_nacimiento, 
                     date_format(u.fecha_creado, '%d/%m/%Y') as fecha_creado,
-                    (
-                        case when (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) is not null then (select datediff(termina, now()) from Suscripcion where paciente=u.id and (now() between empieza and termina) order by termina desc) else -1 end
-                    ) as dias_restantes
+                    0 as dias_restantes
                     
                 from Medico as u
                 where u.usuario=upper(:username) and u.contrasena=:password and u.estado=1
-                limit 1
             ");
 
             $query->execute(array(

@@ -24,3 +24,4 @@ RewriteRule ^api/pacientes$ /medicos/admin/php/run.php?fn=cargar_pacientes [QSA,
 RewriteRule ^api/areas$ /medicos/admin/php/run.php?fn=cargar_areas [QSA,L]
 RewriteRule ^api/check/(.+)/(.+)$ /medicos/php/run.php?fn=check_$1&val=$2 [QSA,L]
 RewriteRule ^api/suscripcion/tipos /medicos/php/run.php?fn=cargar_tiposuscripcion [QSA,L]
+RewriteRule ^upload /medicos/php/upload.php [QSA,L]

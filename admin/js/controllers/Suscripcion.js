@@ -47,7 +47,7 @@
 						if (obj.data.ok)
 						{
 							AlertService.showSuccess(obj.data.msg);
-					    	$location.path("/suscripcion");
+					    	$location.path("/suscripciones");
 					    }
 					    else
 					    	console.log(obj.data);

@@ -1,6 +1,6 @@
 (function(){
 	angular.module("medicos").factory('LoginService', function($http, $location, AlertService, $localStorage, $interval){
-		//$localStorage.$reset();
+		$localStorage.$reset();
 
 		return {
 			isLoggedIn: function(){

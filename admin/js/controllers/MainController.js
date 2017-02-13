@@ -25,8 +25,8 @@
 			password: "root"
 		};
 
-		// if (LoginService.getCurrentUser() == null && window.location.hash.indexOf("recuperar") == -1)
-		// 	$location.path("/login");
+		if (LoginService.getCurrentUser() == null && window.location.hash.indexOf("recuperar") == -1)
+			$location.path("/login");
 
 		$scope.paginationCount = function(n, total){
 			var k = Math.ceil(total/n);

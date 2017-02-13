@@ -14,12 +14,6 @@
 				<div class="modal-body">
 					<div class="register-form">
 						<div class="fila">
-							<p>Cédula (*)</p>
-
-							<p>{{ session.getCurrentUser().tipo_cedula }}-{{ session.getCurrentUser().cedula }}</p>
-						</div>
-
-						<div class="fila">
 							<p>Nombre (*)</p>
 							<input type="text" ng-init="paciente.nombre = session.getCurrentUser().nombre; paciente.id = session.getCurrentUser().id" ng-model="paciente.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
 
@@ -196,20 +190,27 @@
 					<div class="mensaje" ng-repeat="m in chat.mensajes">
 						<div class="bubble {{ m.owner == session.getCurrentUser().usuario ? 'derecha' : 'izquierda' }}">
 							<b><small>{{ m.owner_name }} {{ m.hora_str || 'ahora' }}:</small></b> <br/>
-							{{ m.html }}
+							<span ng-bind-html="m.html"></span>
 						</div>
 					</div>
 				</div>
 
-				<textarea ng-model="$parent.chat_info.mensaje" ng-disabled="session.getCurrentUser().cons_restantes == 0" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
-				<form action="./php/upload.php" method="post" enctype="multipart/form-data">
-					<div class="botones">
-						<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje || session.getCurrentUser().cons_restantes == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
-						<!-- <input type="file" nv-file-select="" uploader="uploader"/>
-						<input type="submit" value="Subir archivo"/> -->
-						<button type="button" class="btn-imagen"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></button>
-					</div>
-				</form>
+				<textarea ng-model="$parent.chat_info.mensaje" ng-disabled="session.getCurrentUser().cons_restantes == 0 && !session.getCurrentUser().es_medico" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
+				<div class="botones">
+					<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje || session.getCurrentUser().cons_restantes == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+					<!-- <input type="file" nv-file-select="" uploader="uploader"/>
+					<input type="submit" value="Subir archivo"/> -->
+					<!-- <button type="button" class="btn-imagen" ng-click="openUploadDialog()"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></button> -->
+
+					<div
+					  class="btn-imagen"
+					  upload-button
+					  accept="image/*"
+					  id="uploader"
+					  url="./upload?medico={{ !session.getCurrentUser().es_medico ? chat_info.medico : session.getCurrentUser().id }}&paciente={{ !session.getCurrentUser().es_medico ? session.getCurrentUser().id : chat_info.paciente }}&owner={{ session.getCurrentUser().usuario }}&owner_name={{ session.getCurrentUser().nombre + ' ' + session.getCurrentUser().apellido }}"
+					  on-success="onSuccess(response)"
+					></div>
+				</div>
 			</div>
 		</div>
 	</div>

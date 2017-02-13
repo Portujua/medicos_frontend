@@ -27,7 +27,7 @@
 						self.user = data;
 						self.user.password = loginData.password;
 						$localStorage.user = self.user;
-				        $location.path("/");
+				        $location.path("/inicio");
 					}
 				});
 			},

@@ -1,5 +1,5 @@
 (function(){
-	var app = angular.module("medicos", ["ngRoute", 'ngAnimate', "angular.filter", 'angular-loading-bar', 'ngStorage', 'toastr']);
+	var app = angular.module("medicos", ["ngRoute", 'ngAnimate', "angular.filter", 'angular-loading-bar', 'ngStorage', 'toastr', 'lr.upload']);
 
 	app.filter('quitarDeshabilitados', function () {
 	    return function (input) {
@@ -96,7 +96,7 @@
 	    };
 	});
 
-	app.config(function(toastrConfig) {
+	app.config(function(toastrConfig, $sceProvider) {
 		angular.extend(toastrConfig, {
 			autoDismiss: false,
 			containerId: 'toast-container',
@@ -112,5 +112,7 @@
 			preventOpenDuplicates: false,
 			target: 'body'
 		});
+
+		$sceProvider.enabled(false);
 	});
 }());

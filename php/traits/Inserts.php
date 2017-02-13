@@ -105,5 +105,34 @@
 
             return json_encode($json);
         }
+
+        public function adjuntar_imagen($post = array())
+        {
+            $json = array();
+
+            try {
+                $query = $this->db->prepare("
+                    insert into Mensaje (paciente, medico, hora, html, owner, owner_name)
+                    values (:paciente, :medico, now(), :mensaje, :owner, :owner_name)
+                ");
+
+                $query->execute(array(
+                    ":paciente" => $post['paciente'],
+                    ":medico" => $post['medico'],
+                    ":mensaje" => $post['mensaje'],
+                    ":owner" => $post['owner'],
+                    ":owner_name" => $post['owner_name']
+                ));
+
+                $json['ok'] = true;
+                $json['msg'] = "Se ha añadido el mensaje";
+            }
+            catch (Exception $e) {
+                $json['error'] = true;
+                $json['msg'] = $e->getMessage();
+            }
+
+            return json_encode($json);
+        }
 	}
 ?>
