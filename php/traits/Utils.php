@@ -23,8 +23,8 @@
         {
             $query = $this->db->prepare("
                 select *
-                from Medico
-                where usuario=:usuario
+                from Paciente
+                where upper(usuario)=upper(:usuario)
             ");
 
             $query->execute(array(
@@ -100,96 +100,6 @@
             }
             else
                 return $lugarfull;
-        }
-
-        function sendEmail($email)
-        {
-            $json = array();
-
-            // Chequeo que sea apto
-            $query = $this->db->prepare("
-                select email
-                from Medico
-                where usuario=:usuario
-            ");
-
-            $query->execute(array(
-                ":usuario" => $email['usuario']
-            ));
-
-            if ($query->rowCount() > 0)
-            {
-                $email['para'] = $query->fetchAll();
-                $email['para'] = $email['para'][0];
-
-                if ($email['para']['email'] != null)
-                    $email['para'] = $email['para']['email'];
-                else
-                {
-                    $json['error'] = 1;
-                    $json['msg'] = "Error, este usuario no posee un correo electrónico asignado.";
-                    return json_encode($json);
-                }
-            }
-            else
-            {
-                $json['error'] = 1;
-                $json['msg'] = "Error, este usuario no existe.";
-                return json_encode($json);
-            }
-
-            // Envio el correo
-            require "PHPMailer/PHPMailerAutoload.php";
-            
-            $mail = new PHPMailer;
-
-            //$mail->isSMTP();
-            $mail->Timeout = 3;
-            $mail->SMTPDebug = 1;
-            $mail->Host = 'mail.ejlorenzo.com.ve';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'recuperar@ejlorenzo.com.ve';
-            $mail->Password = '21115476';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 465; // 587
-
-            $mail->From = 'recuperar@ejlorenzo.com.ve';
-            $mail->FromName = 'Contacto';
-            $mail->addAddress($email['para'], $email['usuario']);
-
-            $mail->isHTML(true);
-
-            $mail->Subject = 'Recuperar contraseña';
-            $mail->Body = '
-                Para reestablecer su contraseña por favor acceda al siguiente enlace: <br><br><br>
-                <a href="http://ejlorenzo.com.ve/medicos/#/recuperar/'.$email['usuario'].'" target="_blank">http://ejlorenzo.com.ve/medicos/#/recuperar/'.$email['usuario'].'</a>
-            ';
-            $mail->AltBody = '
-                Para reestablecer su contraseña por favor acceda al siguiente enlace: 
-
-                http://ejlorenzo.com.ve/medicos/#/recuperar/'.$email['usuario'].'
-            ';
-
-            if(!$mail->Send()) 
-            {
-                $json['error'] = 1;
-                $json['msg'] = "Mailer Error: " . $mail->ErrorInfo;
-                return json_encode($json);
-            } else {
-                // Setteo la variable
-                $query = $this->db->prepare("
-                    update Medico set cambiar_contrasena=1
-                    where usuario=:usuario
-                ");
-
-                $query->execute(array(
-                    ":usuario" => $email['usuario']
-                ));
-
-                $json['success'] = 1;
-                $json['msg'] = "Correo de recuperación enviado con éxito.";
-                return json_encode($json);
-            }
         }
 
         public function csv_personas()

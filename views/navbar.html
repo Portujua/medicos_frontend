@@ -205,7 +205,7 @@
 						<div class="telefonos">
 							Tipo <br>
 							<select class="selectpicker" data-live-search="true" data-width="75%" ng-model="telefono.tipo" name="telefono_id" ts-select-fix>
-								<option ng-repeat="tipo in tipos_telefonos" value="{{ tipo.nombre }}">{{ tipo.nombre }}</option>
+								<option ng-repeat="tipo in tipos_telefonos track by $index" value="{{ tipo.nombre }}">{{ tipo.nombre }}</option>
 							</select><br><br>
 
 							Número
@@ -225,7 +225,7 @@
 								<th>Número</th>
 							</thead>
 							<tbody>
-								<tr class="telefono" ng-repeat="telefono in paciente.telefonos">
+								<tr class="telefono" ng-repeat="telefono in paciente.telefonos track by $index">
 									<td><span ng-click="eliminar_telefono($index)" title="Eliminar">&times;</span></td>
 									<td>{{ telefono.tipo }}</td>
 									<td>{{ telefono.tlf }}</td>

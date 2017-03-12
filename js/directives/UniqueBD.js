@@ -7,16 +7,23 @@
 					var val = ele[0].value;
 					var obj = attrs.uniqueBd;
 
-					if (window.location.hash.indexOf("editar") == -1)
-						$http.get("api/check/" + obj + "/" + val)
-							.success(function(data){
-								c.$setValidity('unique', data.esValido);
-							})
-							.error(function(data){
+					if (window.location.hash.indexOf("editar") == -1) {
+						if (val.length > 0) {
+							$http.get("api/check/" + obj + "/" + val)
+								.success(function(data){
+									c.$setValidity('unique', data.esValido);
+								})
+								.error(function(data){
+									c.$setValidity('unique', false);
+								})
+							}
+							else {
 								c.$setValidity('unique', false);
-							})
-					else
+							}
+					}
+					else {
 						c.$setValidity('unique', true);
+					}
 				})
 			}
 		}

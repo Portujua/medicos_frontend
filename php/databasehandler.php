@@ -5,6 +5,7 @@
     include_once("traits/Utils.php");
     include_once("traits/Selects.php");
     include_once("traits/Deletes.php");
+    include_once("utils.php");
 
 	class DatabaseHandler
 	{
@@ -18,10 +19,6 @@
         private $connect_to = "local";
 
 		private $db;
-
-        private $session_duration = 3600;
-        private $duracion_pedido = 3600;
-        private $admin_usernames = "('root', 'pmartinez', 'marcos')";
 
         public function __construct()
         {
@@ -263,5 +260,16 @@
 
 
         /* Funciones nuevas aqui abajo */
+        public function run($query, $opts = []) {
+            $query = $this->db->prepare($query);
+
+            $r = $query->execute($opts);
+
+            return $r->fetchAll();
+        }
+
+        public function lastID() {
+            return $this->db->lastInsertId();
+        }
 	}
 ?>
