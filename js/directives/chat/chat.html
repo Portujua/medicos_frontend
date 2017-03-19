@@ -1,0 +1,36 @@
+<div class="chat">
+	<div class="chat-window" ng-if="$ctrl.isChatting">
+		<div class="mensajes">
+			<p class="cargar-mas" ng-click="$ctrl.loadMore()">Cargar más</p>
+			<div class="mensaje" ng-repeat="m in $ctrl.mensajes">
+				<div class="bubble {{ m.owner == $ctrl.session.getCurrentUser().usuario ? 'derecha' : 'izquierda' }}">
+					<b><small>{{ m.owner_name | capitalize }} hace {{ m.hora_str || 'un momento' | timeago }}:</small></b> <br/>
+					<span ng-bind-html="m.html"></span>
+					<br><span class="leido" ng-if="m.leido == 1 && m.owner == $ctrl.session.getCurrentUser().usuario">Leído</span>
+				</div>
+			</div>
+		</div>
+
+		<textarea ng-model="$ctrl.mensaje" ng-disabled="$ctrl.session.getCurrentUser().cons_restantes == 0 && !$ctrl.session.getCurrentUser().es_medico" placeholder="Escribe tu mensaje aquí..." ng-keydown="$ctrl.send($event)" autofocus></textarea>
+		<div class="botones">
+			<button type="button" class="btn-enviar" ng-click="$ctrl.send()" ng-disabled="!$ctrl.mensaje || $ctrl.session.getCurrentUser().cons_restantes == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+			<!-- <input type="file" nv-file-select="" uploader="uploader"/>
+			<input type="submit" value="Subir archivo"/> -->
+			<!-- <button type="button" class="btn-imagen" ng-click="openUploadDialog()"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></button> -->
+
+			<div
+			  class="btn-imagen"
+			  upload-button
+			  accept="image/*"
+			  id="uploader"
+			  url="./upload?medico={{ $ctrl.medico.id }}&paciente={{ $ctrl.paciente.id }}&owner={{ $ctrl.session.getCurrentUser().usuario }}&owner_name={{ $ctrl.session.getCurrentUser().nombre + ' ' + session.getCurrentUser().apellido }}"
+			  on-success="$ctrl.onUpload(response)"
+			  on-upload="$ctrl.simulate(response)"
+			></div>
+		</div>
+	</div>
+
+	<p ng-if="!$ctrl.isChatting">
+	  Por favor selecciona con quién deseas chatear.	  
+	</p>
+</div>

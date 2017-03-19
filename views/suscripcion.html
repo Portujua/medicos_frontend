@@ -1,0 +1,29 @@
+<div class="userpanel suscripcion">
+	<div class="comprar_suscripcion" ng-if="session.getCurrentUser().cons_restantes <= 0">
+		Tipo de suscripción 
+		<select ng-model="tiposuscripcion" ng-init="cargar_tsuscripciones()">
+			<option ng-repeat="i in tsuscripciones" value="{{ i.id }}"> {{ i.nombre }} ({{i.cant_cons}} Consultas) </option>
+
+		</select>
+		<button type="button" class="btn btn-primary" ng-disabled="!tiposuscripcion" ng-click="comprar_suscripcion(tiposuscripcion);">Comprar</button>
+	</div>
+	<div class="historial_suscripciones" ng-if="session.getCurrentUser().suscripciones">
+		<h4>Historial de suscripciones</h4>
+		<table class="table table-striped historial_suscripciones">
+			<thead>
+				<th>Número de días</th>
+				<th>Empieza</th>
+				<th>Termina</th>
+				<th>Cantidad de Consultas</th>
+			</thead>
+			<tbody>
+				<tr ng-repeat="s in session.getCurrentUser().suscripciones">
+					<td>{{ s.dias }} días</td>
+					<td>{{ s.empieza }}</td>
+					<td>{{ s.termina }}</td>
+					<td>{{ s.consultas }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

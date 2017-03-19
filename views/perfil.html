@@ -1,217 +1,68 @@
-<div class="perfil" ng-controller="Perfil">
-	<div class="sidebar" ng-init="subtopic = 1;">
-		<p ng-click="subtopic = 1;" class="{{ subtopic == 1 ? 'active' : '' }}">Mi perfil</p>
-		<p ng-hide="session.getCurrentUser().es_medico" ng-click="subtopic = 2;" class="{{ subtopic == 2 ? 'active' : '' }}">Suscripción</p>
-		<p ng-click="subtopic = 3;" class="{{ subtopic == 3 ? 'active' : '' }}" ng-show="session.getCurrentUser().dias_restantes > 0  || session.getCurrentUser().es_medico ">Consulta</p>
-		<hr/>
-		<p ng-click="session.logout()">Salir</p>
-	</div>
+<div class="userpanel perfil">
+	<form class="form-registro" name="agregar" novalidate>
+		<div class="modal-body">
+			<div class="register-form">
+				<div class="fila">
+					<p>Nombre (*)</p>
+					<input type="text" ng-init="$ctrl.paciente.nombre = session.getCurrentUser().nombre; $ctrl.paciente.id = session.getCurrentUser().id" ng-model="$ctrl.paciente.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
 
-	<div class="page">
+					<div class="tooltip-error" ng-if="agregar.nombre.$error.required && agregar.nombre.$dirty">
+						Debes completar este campo
 
-		<div ng-if="subtopic == 1">
-			<form class="form-registro" name="agregar" novalidate>
-				<div class="modal-body">
-					<div class="register-form">
-						<div class="fila">
-							<p>Nombre (*)</p>
-							<input type="text" ng-init="paciente.nombre = session.getCurrentUser().nombre; paciente.id = session.getCurrentUser().id" ng-model="paciente.nombre" name="nombre" ng-minlength=1 ng-maxlength=32 required placeholder="Nombre" />
-
-							<div class="tooltip-error" ng-if="agregar.nombre.$error.required && agregar.nombre.$dirty">
-								Debes completar este campo
-
-								<span class="tooltip-arrow"></span>
-							</div>
-						</div>
-
-						<div class="fila">
-							<p>Segundo Nombre</p>
-							<input type="text" ng-model="paciente.snombre" name="snombre" ng-minlength=0 ng-maxlength=32 ng-init="paciente.snombre = session.getCurrentUser().segundo_nombre" placeholder="Segundo nombre" />
-						</div>
-
-						<div class="fila">
-							<p>Apellido (*)</p>
-							<input type="text" ng-model="paciente.apellido" ng-init="paciente.apellido = session.getCurrentUser().apellido" name="apellido" ng-minlength=1 ng-maxlength=32 required placeholder="Apellido" />
-
-							<div class="tooltip-error" ng-if="agregar.apellido.$error.required && agregar.apellido.$dirty">
-								Debes completar este campo
-
-								<span class="tooltip-arrow"></span>
-							</div>
-						</div>
-
-						<div class="fila">
-							<p>Segundo Apellido</p>
-							<input type="text" ng-model="paciente.sapellido" name="sapellido" ng-minlength=0 ng-maxlength=32 ng-init="paciente.sapellido = session.getCurrentUser().segundo_apellido" placeholder="Segundo apellido" />
-						</div>
-
-						<div class="fila">
-							<p>Fecha de Nacimiento (*)</p>
-							<div class="datepicker-nacimiento" style="width: 100%;">
-								<input type="text" id="fecha_nac" class="form-control" ng-model="paciente.fecha_nacimiento" ng-init="paciente.fecha_nacimiento = session.getCurrentUser().fecha_nacimiento" name="fecha_nac" style="font-size: 11px;" readonly required />
-							</div>
-
-							<script type="text/javascript">
-								$('.datepicker-nacimiento input').datepicker({
-									format: 'dd/mm/yyyy',
-								});
-							</script>
-
-							<div class="tooltip-error" ng-if="agregar.fecha_nac.$error.required && agregar.fecha_nac.$dirty">
-								Debes completar este campo
-
-								<span class="tooltip-arrow"></span>
-							</div>
-						</div>
-
-						<div class="fila">
-							<p>Correo electrónico</p>
-							<input type="email" ng-model="paciente.email" ng-init="paciente.email = session.getCurrentUser().email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" />
-						</div>
-
-						<!-- <hr/>
-
-						<h4 ng-init="paciente.telefonos = []; cargar_tipos_telefonos();">
-							Teléfonos
-						</h4>
-
-						<div class="telefonos">
-							Tipo <br>
-							<select class="selectpicker" data-live-search="true" data-width="75%" ng-model="telefono.tipo" name="telefono_id" ts-select-fix>
-								<option ng-repeat="tipo in tipos_telefonos" value="{{ tipo.nombre }}">{{ tipo.nombre }}</option>
-							</select><br><br>
-
-							Número
-							<div style="width: 75%;">
-								<input type="text" id="nrotelefono" class="form-control" ng-model="telefono.tlf" name="nrotelefono" style="font-size: 11px;" />
-							</div> <br><br>
-
-							<button type="button" class="btn btn-default" ng-click="anadir_telefono()">
-								Añadir
-							</button>
-						</div>
-
-						<table class="table table-striped">
-							<thead>
-								<th>&nbsp;</th>
-								<th>Tipo</th>
-								<th>Número</th>
-							</thead>
-							<tbody>
-								<tr class="telefono" ng-repeat="telefono in paciente.telefonos">
-									<td><span ng-click="eliminar_telefono($index)" title="Eliminar">&times;</span></td>
-									<td>{{ telefono.tipo }}</td>
-									<td>{{ telefono.tlf }}</td>
-								</tr>
-							</tbody>
-						</table> -->
-					</div>					
-				</div>
-
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success btn-outline" ng-disabled="agregar.$invalid" ng-click="ActualizarPaciente(paciente)">Actualizar</button>
-					
-				</div>
-			</form>
-		</div>
-
-		<div ng-if="subtopic == 2">
-			<div class="comprar_suscripcion" ng-if="session.getCurrentUser().cons_restantes <= 0">
-				Tipo de suscripción 
-				<select ng-model="tiposuscripcion" ng-init="cargar_tsuscripciones()">
-					<option ng-repeat="i in tsuscripciones" value="{{ i.id }}"> {{ i.nombre }} ({{i.cant_cons}} Consultas) </option>
-
-				</select>
-				<button type="button" class="btn btn-primary" ng-disabled="!tiposuscripcion" ng-click="comprar_suscripcion(tiposuscripcion);">Comprar</button>
-			</div>
-			<div class="historial_suscripciones" ng-if="session.getCurrentUser().suscripciones">
-				<h4>Historial de suscripciones</h4>
-				<table class="table table-striped historial_suscripciones">
-					<thead>
-						<th>Número de días</th>
-						<th>Empieza</th>
-						<th>Termina</th>
-						<th>Cantidad de Consultas</th>
-					</thead>
-					<tbody>
-						<tr ng-repeat="s in session.getCurrentUser().suscripciones">
-							<td>{{ s.dias }} días</td>
-							<td>{{ s.empieza }}</td>
-							<td>{{ s.termina }}</td>
-							<td>{{ s.consultas }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-
-		<div class="chat" ng-if="subtopic == 3" ng-init="$parent.isChatting = false;">
-			<div ng-show="!$parent.isChatting" class="chat-selection">
-				<div ng-hide="session.getCurrentUser().es_medico">
-					<p>Selecciona un área</p>
-					<select ng-model="$parent.chat_info.area" ng-init="cargar_areas()" ng-change="$parent.chat_info.medico = null;">
-						<option ng-repeat="a in areas" value="{{ a.id }}">{{ a.nombre }}</option>
-					</select>
-					
-					<p ng-show="$parent.chat_info.area">Selecciona un médico</p>
-					<select ng-show="$parent.chat_info.area" ng-model="$parent.chat_info.medico" ng-init="cargar_medicos()">
-						<option ng-repeat="m in medicos | area:$parent.chat_info.area" value="{{ m.id }}">{{ m.nombre_completo }}</option>
-					</select>
-
-					<button type="button" class="btn btn-primary btn-block" ng-disabled="!$parent.chat_info.area || !$parent.chat_info.medico" ng-click="$parent.isClosed = false; go_chat($parent.chat_info);">Chatear</button>
-				</div>
-
-				<div ng-show="session.getCurrentUser().es_medico">
-					<p>Selecciona un paciente</p>
-					<select ng-model="$parent.chat_info.paciente" ng-init="cargar_pacientes()">
-						<option ng-repeat="a in pacientes" value="{{ a.id }}">{{ a.nombre_completo }}</option>
-					</select>
-
-					<button type="button" class="btn btn-primary btn-block" ng-disabled="!$parent.chat_info.paciente" ng-click="$parent.isClosed = false; go_chat($parent.chat_info);">Chatear</button>
-				</div>
-			</div>
-
-			
-			<div ng-hide="session.getCurrentUser().es_medico">
-				<button ng-show="$parent.isChatting" class="btn btn-link"  ng-init="$parent.isClosed = false;" ng-click="$parent.isClosed = true; $parent.isChatting = false; ">&larr; Volver</button>
-			</div>
-			
-			<div ng-show="$parent.isChatting && session.getCurrentUser().es_medico==1">
-				
-				<button  class="btn btn-link" ng-init="$parent.isClosed = false;" ng-click="cerrar_consulta($parent.chat_info);">&larr; Cerrar Consulta</button>
-			
-				<button  ng-click="$parent.isClosed = true; $parent.isChatting = false;" class="btn btn-link">&larr; Volver</button>
-			</div>
-
-
-			<div ng-show="$parent.isChatting" class="chat-window">
-				<div class="mensajes">
-					<p class="cargar-mas" ng-click="cargar_mas()">Cargar más</p>
-					<div class="mensaje" ng-repeat="m in chat.mensajes">
-						<div class="bubble {{ m.owner == session.getCurrentUser().usuario ? 'derecha' : 'izquierda' }}">
-							<b><small>{{ m.owner_name }} {{ m.hora_str || 'ahora' }}:</small></b> <br/>
-							<span ng-bind-html="m.html"></span>
-						</div>
+						<span class="tooltip-arrow"></span>
 					</div>
 				</div>
 
-				<textarea ng-model="$parent.chat_info.mensaje" ng-disabled="session.getCurrentUser().cons_restantes == 0 && !session.getCurrentUser().es_medico" placeholder="Escribe tu mensaje aquí..." ng-keydown="enviar_mensaje($event)"></textarea>
-				<div class="botones">
-					<button type="button" class="btn-enviar" ng-click="enviar_mensaje()" ng-disabled="!$parent.chat_info.mensaje || session.getCurrentUser().cons_restantes == 0"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
-					<!-- <input type="file" nv-file-select="" uploader="uploader"/>
-					<input type="submit" value="Subir archivo"/> -->
-					<!-- <button type="button" class="btn-imagen" ng-click="openUploadDialog()"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></button> -->
-
-					<div
-					  class="btn-imagen"
-					  upload-button
-					  accept="image/*"
-					  id="uploader"
-					  url="./upload?medico={{ !session.getCurrentUser().es_medico ? chat_info.medico : session.getCurrentUser().id }}&paciente={{ !session.getCurrentUser().es_medico ? session.getCurrentUser().id : chat_info.paciente }}&owner={{ session.getCurrentUser().usuario }}&owner_name={{ session.getCurrentUser().nombre + ' ' + session.getCurrentUser().apellido }}"
-					  on-success="onSuccess(response)"
-					></div>
+				<div class="fila">
+					<p>Segundo Nombre</p>
+					<input type="text" ng-model="$ctrl.paciente.snombre" name="snombre" ng-minlength=0 ng-maxlength=32 ng-init="$ctrl.paciente.snombre = session.getCurrentUser().segundo_nombre" placeholder="Segundo nombre" />
 				</div>
-			</div>
+
+				<div class="fila">
+					<p>Apellido (*)</p>
+					<input type="text" ng-model="$ctrl.paciente.apellido" ng-init="$ctrl.paciente.apellido = session.getCurrentUser().apellido" name="apellido" ng-minlength=1 ng-maxlength=32 required placeholder="Apellido" />
+
+					<div class="tooltip-error" ng-if="agregar.apellido.$error.required && agregar.apellido.$dirty">
+						Debes completar este campo
+
+						<span class="tooltip-arrow"></span>
+					</div>
+				</div>
+
+				<div class="fila">
+					<p>Segundo Apellido</p>
+					<input type="text" ng-model="$ctrl.paciente.sapellido" name="sapellido" ng-minlength=0 ng-maxlength=32 ng-init="$ctrl.paciente.sapellido = session.getCurrentUser().segundo_apellido" placeholder="Segundo apellido" />
+				</div>
+
+				<div class="fila">
+					<p>Fecha de Nacimiento (*)</p>
+					<div class="datepicker-nacimiento" style="width: 100%;">
+						<input type="text" id="fecha_nac" class="form-control" ng-model="$ctrl.paciente.fecha_nacimiento" ng-init="$ctrl.paciente.fecha_nacimiento = session.getCurrentUser().fecha_nacimiento" name="fecha_nac" style="font-size: 11px;" readonly required />
+					</div>
+
+					<script type="text/javascript">
+						$('.datepicker-nacimiento input').datepicker({
+							format: 'dd/mm/yyyy',
+						});
+					</script>
+
+					<div class="tooltip-error" ng-if="agregar.fecha_nac.$error.required && agregar.fecha_nac.$dirty">
+						Debes completar este campo
+
+						<span class="tooltip-arrow"></span>
+					</div>
+				</div>
+
+				<div class="fila">
+					<p>Correo electrónico</p>
+					<input type="email" ng-model="$ctrl.paciente.email" ng-init="$ctrl.paciente.email = session.getCurrentUser().email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" required />
+				</div>
+			</div>					
 		</div>
-	</div>
+
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-success btn-outline" ng-disabled="agregar.$invalid" ng-click="$ctrl.actualizar()">Actualizar</button>
+			
+		</div>
+	</form>		
 </div>

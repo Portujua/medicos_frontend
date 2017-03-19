@@ -1,6 +1,8 @@
 <?php
 	trait Selects {
-        public function cargar_lugares($post)
+        abstract public function run($query, $opts = []);
+
+        public function get_lugares($post)
         {
             $query = $this->db->prepare("
                 select *
@@ -12,7 +14,7 @@
             return json_encode($query->fetchAll());
         }
 
-        public function cargar_tipos_telefonos($post)
+        public function get_tipos_telefonos($post)
         {
             $query = $this->db->prepare("
                 select *
@@ -24,7 +26,7 @@
             return json_encode($query->fetchAll());
         }
 
-        public function cargar_medicos($post, $query_extra = "")
+        public function get_medicos($post, $query_extra = "")
         {
             $query = $this->db->prepare("
                 select
@@ -105,7 +107,7 @@
             return json_encode($medicos);
         }
 
-        public function cargar_areas($post)
+        public function get_areas($post)
         {
             $query = $this->db->prepare("
                 select *
@@ -118,7 +120,7 @@
 
             return json_encode($areas);
         }
-        public function cargar_tiposuscripcion($post)
+        public function get_tiposuscripcion($post)
         {
             $query = $this->db->prepare("
                 select *
@@ -131,11 +133,69 @@
 
             return json_encode($tsuscripcion);
         }
-        public function cargar_mensajes($post)
+
+        public function get_mensajes_pendientes($post) {
+            $query = $this->db->prepare("
+                select 
+                    id as id,
+                    html as html,
+                    img as img,
+                    concat(time_format(hora, '%h:%i:%s %p'), ' ', date_format(hora, '%d/%m/%Y')) as hora_str,
+                    hora as hora_completa,
+                    date_format(hora, '%d/%m/%Y') as fecha,
+                    time_format(hora, '%h:%i:%s %p') as hora,
+                    (select concat(nombre, ' ', apellido) from Paciente where id=paciente) as paciente,
+                    (select concat(nombre, ' ', apellido) from Medico where id=medico) as medico,
+                    owner as owner,
+                    owner_name as owner_name,
+                    leido as leido
+                from Mensaje 
+                where 
+                    paciente=:paciente and medico=:medico and leido=0 and owner!=:usuario
+                order by id desc
+            ");
+
+            $query->execute([
+                ":paciente" => $post['paciente'],
+                ":medico" => $post['medico'],
+                ":usuario" => $post['usuario']
+            ]);
+
+            $json = [];
+            $json['cantidad'] = $query->rowCount();
+            $json['ultimo'] = null;
+
+            if ($json['cantidad'] > 0) {
+                $aux = $query->fetchAll();
+                $json['ultimo'] = $aux[0];
+            }
+
+            return json_encode($json);
+        }
+
+        public function get_leidos($post) {
+            $query = $this->db->prepare("select * from Mensaje where id in (".$post['ids'].")");
+            $query->execute();
+            $mensajes = $query->fetchAll();
+            $json = [];
+            $json['mensajes'] = [];
+
+            foreach ($mensajes as $m) {
+                if ($m['leido'] == '1') {
+                    $json['mensajes'][] = $m['id'];
+                }
+            }
+
+            return json_encode($json);
+        }
+        
+        public function get_mensajes($post)
         {
             $n = intval($post['n']);
             $m = 0;
             $last = intval($post['last']) != -1 ? " and m.id<" . $post['last'] : "";
+
+            $nuevos = isset($post['nuevos']) ? " and m.leido=0" : "";
 
             $chat = array();
 
@@ -152,11 +212,13 @@
                         (select concat(nombre, ' ', apellido) from Paciente where id=m.paciente) as paciente,
                         (select concat(nombre, ' ', apellido) from Medico where id=m.medico) as medico,
                         m.owner as owner,
-                        m.owner_name as owner_name
+                        m.owner_name as owner_name,
+                        m.leido as leido
                     from Mensaje as m
                     where 
                         m.paciente=:paciente and
                         m.medico=:medico ".$last."
+                        ".$nuevos."
                     order by m.hora desc
                     limit ".($n * $m).",".$n."
                 ) R
@@ -169,6 +231,12 @@
             ));
 
             $chat['mensajes'] = $query->fetchAll();
+
+            foreach ($chat['mensajes'] as $m) {
+                if (strcmp($m['owner'], $post['me']) != 0) {
+                    $this->run("update Mensaje set leido=1 where id=:id", [":id" => $m['id']]);
+                }
+            }
 
             $query = $this->db->prepare("
                 select
@@ -203,7 +271,7 @@
             return json_encode($chat);
         }
 
-        public function cargar_pacientes($post, $query_extra = "")
+        public function get_pacientes($post, $query_extra = "")
         {
             $query = $this->db->prepare("
                 select
@@ -221,7 +289,8 @@
                     p.cedula as cedula,
                     p.tipo_cedula as tipo_cedula,
                     p.email as email,
-                    p.usuario as usuario
+                    p.usuario as usuario,
+                    p.email_validado as email_validado
                 from Paciente as p
                 where 1=1
                 ".$query_extra."

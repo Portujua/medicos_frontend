@@ -24,30 +24,54 @@
 
 		<title id="website_title">Médicos</title>
 
+		<?php
+			$folder_includes = array('./css/');//, './js/lib/first/', './js/', './js/lib/', './js/services/', './js/directives/', './js/controllers/');
+
+			foreach ($folder_includes as $folder)
+			{
+				$files = array_diff(scandir($folder), array('.', '..'));
+
+				echo '<!-- '.strtoupper(str_replace(array('.', '/'), '', $folder)).' Includes -->';
+
+				foreach ($files as $f)
+				{
+					$ext = explode('.', $f);
+					$ext = $ext[count($ext) - 1];
+
+					$path = $folder . $f;
+
+					if ($ext == 'css')
+						echo '<link rel="stylesheet" type="text/css" href="'.$path.'" />';
+					elseif ($ext == 'js')
+						echo '<script type="text/javascript" src="'.$path.'"></script>';
+				}
+
+				echo '<!-- End '.strtoupper(str_replace(array('.', '/'), '', $folder)).' Includes -->';
+			}
+		?>
+
 		<!-- jQuery -->
 		<script type="text/javascript" src="js/lib/jquery-2.1.1.min.js"></script>
 
+		<!-- underscore -->
+		<script type="text/javascript" src="js/lib/underscore-min.js"></script>
+
 		<!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<script type="text/javascript" src="js/lib/bootstrap.js"></script>
 
 		<!-- jQuery Confirm -->
 		<script type="text/javascript" src="js/lib/jquery-confirm.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/jquery-confirm.css" />
 
 		<!-- jQuery UI -->
 		<script type="text/javascript" src="js/lib/jquery-ui-1.9.2.custom.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.9.2.custom.min.css" />
-
-		<!-- CSS -->
-		<link rel="stylesheet" type="text/css" href="css/style.css" />
 
 		<!-- AngularJS -->		
 		<script type="text/javascript" src="js/lib/angular.js"></script>
 		<script type="text/javascript" src="js/lib/angular-route.js"></script>
 		<script type="text/javascript" src="js/app-config.js"></script>
 		<script type="text/javascript" src="js/route-config.js"></script>
+		<script type="text/javascript" src="js/interceptors.js"></script>
+		<script type="text/javascript" src="js/run.js"></script>
 		<script type="text/javascript" src="js/lib/angular-filter-min.js"></script>
 		<script type="text/javascript" src="js/lib/angular-animate.min.js"></script>
 		<script type="text/javascript" src="js/angular-file-upload.min.js"></script>
@@ -74,18 +98,15 @@
 
 
 		<!-- Angular Loading Bar -->
-		<link rel="stylesheet" type="text/css" href="css/loading-bar.css" />
 		<script type="text/javascript" src="js/lib/loading-bar.js"></script>
 
 		<!-- Angular Storage -->
 		<script type="text/javascript" src="js/lib/ngStorage.min.js"></script>
 
 		<!-- Boostrap Select -->
-		<link rel="stylesheet" type="text/css" href="css/bootstrap-select.css" />
 		<script type="text/javascript" src="js/lib/bootstrap-select.js"></script>
 
 		<!-- Angular datepicker -->
-		<link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker.css" />
 		<script type="text/javascript" src="js/lib/bootstrap-datepicker.js"></script>
 
 		<!-- Angular upload -->
@@ -94,13 +115,19 @@
 
 
 		<script type="text/javascript" src="js/utils.js"></script>
+
+
+		<!-- Chat directive -->
+		<script type="text/javascript" src="js/directives/chat/chat.directive.js"></script>
+		<script type="text/javascript" src="js/directives/chat/chat.controller.js"></script>
 	</head>
 
 	<body ng-controller="MainController">
-		<div ng-include="'views/navbar.html'"></div>
+		<div ng-include="'views/navbar.html'" ng-if="!session.isLoggedIn()"></div>
+		<div ng-include="'views/sidebar.html'" ng-if="session.isLoggedIn()"></div>
 
 		<div ng-view></div>
 
-		<div ng-include="'views/footer.html'"></div>
+		<div ng-include="'views/footer.html'" ng-if="!session.isLoggedIn()"></div>
 	</body>
 </html>

@@ -2,7 +2,7 @@
 	trait Inserts {
         abstract public function run($query, $opts = []);
 
-		public function agregar_paciente($post)
+		public function post_agregar_paciente($post)
         {
             $this->run("
                 insert into Paciente (nombre, segundo_nombre, apellido, segundo_apellido, cedula, email, usuario, contrasena, fecha_nacimiento, fecha_creado, sexo, estado_civil, lugar, direccion, tipo_cedula) 
@@ -40,10 +40,25 @@
                     ]); 
                 }
 
+            $token = getToken();
+
+            $this->run("insert into Token (token) values (:token)", [":token" => $token]);
+
+            $nombreCompleto = strtoupper($post['nombre'])." ".strtoupper($post['apellido']);
+            $url = "http://www.salazarseijas.com/medicos/php/validate.php?token=$token";
+
+            sendEmail([
+                "fromName" => "Contacto",
+                "subject" => "Por favor confirma tu cuenta",
+                "body" => "Hola $nombreCompleto,<br><br>Por favor haz click en el siguiente enlace para confirmar tu cuenta.<br><br><a href='$url' target='_blank'>$url</a>",
+                "to" => $post['email'],
+                "toName" => $nombreCompleto
+            ]);
+
             return json_response(["msg" => $post['nombre'] . " " . $post['apellido'] . " fue añadido correctamente."]);
         }
 
-        public function agregar_suscripcion($post = array())
+        public function post_agregar_suscripcion($post = array())
         {
             $json = array();
 
@@ -69,7 +84,7 @@
             return json_encode($json);
         }
 
-        public function agregar_mensaje($post = array())
+        public function post_mensaje($post = array())
         {
             $json = array();
 
@@ -88,7 +103,6 @@
                 ));
 
                 $json['ok'] = true;
-                $json['msg'] = "Se ha añadido el mensaje";
             }
             catch (Exception $e) {
                 $json['error'] = true;

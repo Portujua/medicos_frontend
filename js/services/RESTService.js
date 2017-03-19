@@ -1,10 +1,48 @@
 (function(){
 	angular.module("medicos").factory('RESTService', function($http, $timeout){
 		return {
+			get: (url, data = {}) => {
+				let params = "";
+
+				for (let key in data) {
+		      if (data.hasOwnProperty(key)) {
+		         params += (params.length > 0 ? '&' : '') + `${key}=${data[key]}`;
+		      }
+		    }
+
+				return $http.get(`api/${url}?${params}`);
+			},
+
+			post: (url, data = {}) => {
+				return $http({
+					method: 'POST',
+					url: `api/${url}`, 
+					data: $.param(data),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				});
+			},
+
+			put: (url, data = {}) => {
+				return $http({
+					method: 'PUT',
+					url: `api/${url}`, 
+					data: $.param(data),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				});
+			},
+
+			delete: (url, data = {}) => {
+				return $http({
+					method: 'DELETE',
+					url: `api/${url}`, 
+					data: $.param(data),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				});
+			},
+
 			getMedicos: function(s){
 				$http.get("api/medicos").then(function(obj){
 					s.medicos = obj.data;
-					console.log(obj)
 					$timeout(function(){$('.selectpicker').selectpicker('refresh');}, 500);
 				});
 			},
@@ -12,7 +50,6 @@
 			getTSuscripcion: function(s){
 				$http.get("api/suscripcion/tipos").then(function(obj){
 					s.tsuscripciones = obj.data;
-					console.log(obj)
 					$timeout(function(){$('.selectpicker').selectpicker('refresh');}, 500);
 				});
 			},

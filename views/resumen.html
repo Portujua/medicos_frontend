@@ -1,0 +1,25 @@
+<div class="userpanel resumen">
+	<div class="alert alert-info fade in" ng-if="!session.getCurrentUser().email_validado">
+	  <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+	  <strong>Cuenta no verificada!</strong> Por favor confirma tu cuenta haciendo click en el enlace que hemos enviado a {{ session.getCurrentUser().email | lowercase }}
+	</div>
+	
+	<div class="panel col-6" ng-if="$ctrl.hayMensajesNoLeidos">
+		<p class="title">
+			Mensajes no leídos
+		</p>
+
+		<a ng-repeat="r in (session.getCurrentUser().es_medico ? $ctrl.pacientes : $ctrl.medicos)" href="./#/consulta/{{ session.getCurrentUser().es_medico ? session.getCurrentUser().usuario : r.usuario | lowercase }}/{{ session.getCurrentUser().es_medico ? r.usuario : session.getCurrentUser().usuario | lowercase }}">
+			<div class="mensaje" ng-if="r.ultimo_mensaje">
+				<div>
+					<span class="unread">{{ r.mensajes_pendientes }}</span>
+					<i class="fa fa-envelope fa-fw" aria-hidden="true"></i>
+				</div>
+				<div>
+					<span class="owner">{{ session.getCurrentUser().es_medico ? r.ultimo_mensaje.paciente : r.ultimo_mensaje.medico | capitalize }} hace {{ r.ultimo_mensaje.hora_str | timeago }}:</span> <br>
+					<span class="mensaje" ng-bind-html="r.ultimo_mensaje.html | noImagenes:64"></span>
+				</div>
+			</div>
+		</a>
+	</div>
+</div>

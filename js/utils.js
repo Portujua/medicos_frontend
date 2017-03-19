@@ -29,7 +29,7 @@ function refresh_selectpicker()
 Array.prototype.contains = function(obj){
 	var i = this.length;
     while (i--) {
-        if (this[i] === obj) {
+        if (this[i] == obj) {
             return true;
         }
     }

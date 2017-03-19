@@ -265,7 +265,11 @@
 
             $r = $query->execute($opts);
 
-            return $r->fetchAll();
+            if (method_exists($r, 'fetchAll')) {
+                return $r->fetchAll();
+            }
+
+            return true;
         }
 
         public function lastID() {

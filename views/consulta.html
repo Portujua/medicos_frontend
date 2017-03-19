@@ -1,0 +1,30 @@
+<div class="userpanel chat-panel">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-2 panel" ng-if="!session.getCurrentUser().es_medico">
+				<p class="panel-title">Áreas</p>
+				<div class="divider"></div>
+
+				<p class="opt {{ $ctrl.area == a.id ? 'selected' : '' }}" ng-repeat="a in $ctrl.areas" ng-click="$ctrl.area = a.id;">{{ a.nombre | capitalize }} <i class="fa fa-arrow-right pull-right fa-fw" aria-hidden="true"></i></p>
+			</div>
+
+			<div class="col-2 panel" ng-if="!session.getCurrentUser().es_medico">
+				<p class="panel-title">Médicos</p>
+				<div class="divider"></div>
+
+				<p class="opt {{ $ctrl.medico.id == a.id ? 'selected' : '' }}" ng-repeat="a in $ctrl.medicos | area:$ctrl.area" ng-click="$ctrl.medico = a; a.mensajes_pendientes = 0;">{{ a.nombre_completo | capitalize }} <span class="badge pull-right" ng-if="a.mensajes_pendientes">{{ a.mensajes_pendientes }}</span></p>
+			</div>
+
+			<div class="col-4 panel" ng-if="session.getCurrentUser().es_medico">
+				<p class="panel-title">Pacientes</p>
+				<div class="divider"></div>
+
+				<p class="opt {{ $ctrl.paciente.id == a.id ? 'selected' : '' }}" ng-repeat="a in $ctrl.pacientes" ng-click="$ctrl.paciente = a; a.mensajes_pendientes = 0;">{{ a.nombre_completo | capitalize }} <span class="badge pull-right" ng-if="a.mensajes_pendientes">{{ a.mensajes_pendientes }}</span></p>
+			</div>
+
+			<div class="col-8 panel">
+				<chat medico="$ctrl.medico ? $ctrl.medico : session.getCurrentUser()" paciente="$ctrl.paciente ? $ctrl.paciente : session.getCurrentUser()"></chat>
+			</div>
+		</div>
+	</div>
+</div>

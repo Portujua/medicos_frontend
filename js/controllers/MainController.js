@@ -15,6 +15,10 @@
 			return LoginService.isLoggedIn();
 		}
 
+		$scope.isLocation = function(str) {
+			return window.location.hash.indexOf(str) > -1;
+		}
+
 		$interval(() => {
 			$scope.session = LoginService;
 		}, 1000);

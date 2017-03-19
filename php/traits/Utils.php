@@ -1,6 +1,8 @@
 <?php
 	trait Utils {
-        public function check_cedula_paciente($post)
+        abstract public function run($query, $opts = []);
+
+        public function post_check_cedula_paciente($post)
         {
             $query = $this->db->prepare("
                 select *
@@ -19,26 +21,28 @@
             return json_encode($json);
         }
 
-        public function check_usuario($post)
+        public function post_check_usuario($post)
         {
-            $query = $this->db->prepare("
+            $p = $this->run("
                 select *
                 from Paciente
                 where upper(usuario)=upper(:usuario)
-            ");
+            ", [":usuario" => $post['val']]);
 
-            $query->execute(array(
-                ":usuario" => $post['val']
-            ));
+            $m = $this->run("
+                select *
+                from Medico
+                where upper(usuario)=upper(:usuario)
+            ", [":usuario" => $post['val']]);
 
             $json = array();
-            $json['existe'] = $query->rowCount() > 0 ? true : false;
-            $json['esValido'] = $query->rowCount() == 0 ? true : false;
+            $json['existe'] = $p->rowCount() > 0 || $m->rowCount() > 0 ? true : false;
+            $json['esValido'] = $p->rowCount() == 0 && $m->rowCount() == 0 ? true : false;
 
             return json_encode($json);
         }
 
-		public function obtener_lugar($post, $lugarfull = array("nombre_completo" => "", "id" => -1, "nombre" => ""), $json = true)
+		public function get_obtener_lugar($post, $lugarfull = array("nombre_completo" => "", "id" => -1, "nombre" => ""), $json = true)
         {
             $query = null;
             $lugar = null;
@@ -148,6 +152,17 @@
                 );
 
             return $csv;
+        }
+
+        public function validarEmail($token) {
+            $r = $this->run("select * from Token where token=:token", [":token" => $token]);
+
+            if ($r->rowCount() == 1) {
+                $this->run("delete from Token where token=:token", [":token" => $token]);
+                return true;
+            }
+
+            return false;
         }
 	}
 ?>

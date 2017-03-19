@@ -4,8 +4,12 @@
 
 	$dbh->actualizar_hora_sesion();
 
-	$send = count($_GET) > 1 ? $_GET : $_POST;
+	parse_str(file_get_contents("php://input"), $send); 
 
-	$fn = strval($_GET['fn']);
+	if (count($_GET) > 1) {
+		$send = $_GET;
+	}
+
+	$fn = strtolower($_SERVER['REQUEST_METHOD'])."_".strval($_GET['fn']);
 	echo $dbh->$fn($send);
 ?>

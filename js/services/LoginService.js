@@ -1,14 +1,27 @@
 (function(){
-	angular.module("medicos").factory('LoginService', function($http, $location, AlertService, $localStorage, $interval){
-		$localStorage.$reset();
+	angular.module("medicos").factory('LoginService', function($http, $location, AlertService, $localStorage, $interval, RESTService){
+		//session.$reset();
+		if (!$localStorage.medicos) {
+			$localStorage.medicos = {};
+		}
+		else {
+			if ($localStorage.medicos.user) {
+				RESTService.post('reload', { username: $localStorage.medicos.user.usuario })
+					.then((response) => {
+						$localStorage.medicos.user = response.data;
+					})
+			}
+		}
+
+		var session = $localStorage.medicos;
 
 		return {
 			isLoggedIn: function(){
-				return typeof $localStorage.user != 'undefined';
+				return typeof session.user != 'undefined';
 			},
 			logout: function(){
 				$http.get("php/unset.php").then(function(){
-					$localStorage.$reset();
+					delete session.user;
 					window.location.reload(true);
 				});
 			},
@@ -16,80 +29,89 @@
 				$http.get("php/run.php?fn=actualizar_hora_sesion");
 			},
 			login: function(loginData){
-				$localStorage.$reset();
-				$http({
-					method: 'POST',
-					url: "php/run.php?fn=login", 
-					data: $.param({username:loginData.username, password:loginData.password}),
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-				}).then(function(obj){
-					var data = obj.data;
-					console.log(obj);
-					if (data.error)
-						AlertService.showError("Usuario o contraseña inválida");
-					else
-					{
-						$localStorage.user = data;
-						$localStorage.session_key = $localStorage.now_key ? $localStorage.now_key : Math.random();
-						$localStorage.last_session_date = new Date().getTime();
-					}
-				});
+				delete session.user;
+
+				RESTService.post('login', {username:loginData.username, password:loginData.password})
+					.then((response) => {
+						var data = response.data;
+						
+						if (data.error)
+							AlertService.showError("Usuario o contraseña inválida");
+						else
+						{
+							session.user = data;
+							session.session_key = session.now_key ? session.now_key : Math.random();
+							session.last_session_date = new Date().getTime();
+
+							$localStorage.user = data;
+
+							console.log(session)
+
+							$location.path("/resumen");
+						}
+					})
 			},
 			getCurrentUser: function(){
-				return $localStorage.user;
+				return session.user;
 			},
 			resetIdle: function(){
-				window.onmousemove = function(){ $localStorage.idle_time = 0; $localStorage.last_date_idle = new Date().getTime(); };
-				window.onkeypress = function(){ $localStorage.idle_time = 0; $localStorage.last_date_idle = new Date().getTime(); };
+				window.onmousemove = function(){ session.idle_time = 0; session.last_date_idle = new Date().getTime(); };
+				window.onkeypress = function(){ session.idle_time = 0; session.last_date_idle = new Date().getTime(); };
 			},
+			reload: () => {
+				RESTService.post('reload', { username: session.user.usuario })
+					.then((response) => {
+						session.user = response.data;
+					})
+				},
 			startTimer: function(){
 				this.resetIdle();
 				return;
 				var loginService = this;
 
 				$interval(function(){
-					if ($localStorage.user)
-						if ($localStorage.user.es_admin) 
+					if (session.user)
+						if (session.user.es_admin) 
 							return;
 					
-					$localStorage.idle_time++;
+					session.idle_time++;
 
 					if ($(".jconfirm").length == 0)
 						if (
-							($localStorage.idle_time > $localStorage.session_time && loginService.isLoggedIn()) || 
-							($localStorage.now_key != $localStorage.session_key && window.location.hash.indexOf("login") == -1)
+							(session.idle_time > session.session_time && loginService.isLoggedIn()) || 
+							(session.now_key != session.session_key && window.location.hash.indexOf("login") == -1)
 							)
 						{
-							$localStorage.now_key = $localStorage.session_key;
+							session.now_key = session.session_key;
 
 							$.confirm({
 								title: "Confirmar contraseña",
-								content: '<p>Has estado un tiempo inactivo o bien has refrescado la página, por favor introduce tu clave de nuevo para desbloquear el sistema.</p><div class="form-group"><input autofocus type="password" id="password" placeholder="Contraseña" class="form-control"></div><p>Tiene ' + (3 - $localStorage.password_attempts) + ' intentos restantes antes que sea expulsado del sistema</p>',
+								content: '<p>Has estado un tiempo inactivo o bien has refrescado la página, por favor introduce tu clave de nuevo para desbloquear el sistema.</p><div class="form-group"><input autofocus type="password" id="password" placeholder="Contraseña" class="form-control"></div><p>Tiene ' + (3 - session.password_attempts) + ' intentos restantes antes que sea expulsado del sistema</p>',
 								keyboardEnabled: true,
 								backgroundDismiss: false,
 								confirm: function(){
 									var pwd = this.$b.find("input").val();
 									
-									if (pwd != $localStorage.user.password)
+									if (pwd != session.user.password)
 									{
-										if ($localStorage.password_attempts >= 3)
+										if (session.password_attempts >= 3)
 											loginService.logout();
 										else
 										{
-											$localStorage.now_key = Math.random();
-											$localStorage.password_attempts++;
+											session.now_key = Math.random();
+											session.password_attempts++;
 										}
 									}
 									else
 										loginService.updateSessionTime();
 								},
 								cancel: function(){
-									if ($localStorage.password_attempts >= 3)
+									if (session.password_attempts >= 3)
 										loginService.logout();
 									else
 									{
-										$localStorage.now_key = Math.random();
-										$localStorage.password_attempts++;
+										session.now_key = Math.random();
+										session.password_attempts++;
 									}
 								}
 							});

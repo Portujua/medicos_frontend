@@ -14,12 +14,15 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown" ng-show="session.isLoggedIn()">
-					<a class="menuitem" href="./#/" class="dropdown-toggle" data-toggle="dropdown">
+					<a class="menuitem" href="" class="dropdown-toggle" data-toggle="dropdown">
 						{{ session.getCurrentUser().nombre_completo }} <small>({{ session.getCurrentUser().dias_restantes > 0 && session.getCurrentUser().cons_restantes > 0 ? session.getCurrentUser().dias_restantes + ' DÍAS' +' -' + session.getCurrentUser().cons_restantes + ' CONSULTAS' : 'GRATIS' }}) </small> <span class="caret"></span>
 					</a>
 
 					<ul id="login-dp" class="dropdown-menu">
+						<a href="./#/resumen"><li>Resumen</li></a>
 						<a href="./#/perfil"><li>Mi perfil</li></a>
+						<a href="./#/suscripcion"><li>Suscripción</li></a>
+						<a href="./#/consulta"><li>Consulta</li></a>
 						<li role="separator" class="divider"></li>
 						<li ng-click="session.logout()">Salir</li>
 					</ul>
@@ -39,10 +42,10 @@
 										<div class="form-group">
 											<label class="sr-only" for="exampleInputPassword2">Contraseña</label>
 											<input type="password" tabindex="2" class="form-control" id="exampleInputPassword2" name="password" placeholder="Contraseña" required ng-model="$parent.loginform.password">
-                                            <div class="help-block text-right"><a href="./#/">Olvidaste la contraseña?</a></div>
+											<div ng-if="false" class="help-block text-right"><a href="./#/">Olvidaste la contraseña?</a></div>
 										</div>
 										<div class="form-group">
-											<button type="button" tabindex="3" ng-disabled="form.$invalid || form.$pristine" class="btn btn-primary btn-block" ng-click="login()">Entrar</button>
+											<button type="submit" tabindex="3" ng-disabled="form.$invalid || form.$pristine" class="btn btn-primary btn-block" ng-click="login()">Entrar</button>
 										</div>
 									 </form>
 								</div>
@@ -177,6 +180,12 @@
 						<div class="fila">
 							<p>Correo electrónico (*)</p>
 							<input type="email" ng-model="paciente.email" name="email" ng-minlength=0 ng-maxlength=32 placeholder="Email" required />
+
+							<div class="tooltip-error" ng-if="agregar.email.$error.required && agregar.email.$dirty">
+								Debes completar este campo
+
+								<span class="tooltip-arrow"></span>
+							</div>
 						</div>
 
 						<div class="fila">

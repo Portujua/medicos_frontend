@@ -57,6 +57,7 @@ create table Paciente (
 	lugar int not null,
 	direccion varchar(256) not null,
 	cambiar_contrasena tinyint(1) default 0,
+	email_validado tinyint(1) default 0,
 	primary key(id),
 	unique(cedula),
 	foreign key (lugar) references Lugar(id)
@@ -104,6 +105,7 @@ create table Mensaje (
 	hora datetime,
 	owner varchar(128) not null comment 'el nombre de usuario del dueno',
 	owner_name varchar(128) not null comment 'el nombre completo del dueno',
+	leido tinyint(1) default 0,
 	primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 
@@ -127,4 +129,11 @@ create table Tipo_Suscripcion (
 	cant_cons int not null,
 	estado tinyint(1) default 1,
 	primary key(id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+create table Token (
+	id int not null auto_increment,
+	token varchar(128) not null,
+	para varchar(128) default 'validar_email',
+	primary key(id), unique(token)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;

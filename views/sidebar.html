@@ -1,0 +1,52 @@
+<div class="sidebar">
+	<div class="photo">
+		<img ng-if="session.getCurrentUser().foto" src="{{ session.getCurrentUser().foto }}" />
+
+		<i class="fa fa-user-circle" aria-hidden="true"></i>
+	</div>
+
+	<div class="greeting">
+		Hola {{ session.getCurrentUser().nombre_completo | capitalize }} <br>
+		<!-- <span>Tipo de cuenta: {{ session.getCurrentUser().dias_restantes > 0 && session.getCurrentUser().cons_restantes > 0 ? 'SUSCRIPCIÓN' : 'GRATIS' }}</span><br> -->
+		<p class="text-center" ng-if="session.getCurrentUser().dias_restantes > 0 && session.getCurrentUser().cons_restantes > 0">
+			<span title="Días restantes"><i class="fa fa-calendar" aria-hidden="true"></i> {{ session.getCurrentUser().dias_restantes }}</span>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+			<span title="Consultas restantes"><i class="fa fa-stethoscope" aria-hidden="true"></i> {{ session.getCurrentUser().cons_restantes }}</span>
+		</p>
+	</div>
+
+	<hr>
+
+	<a href="./#/resumen">
+		<div class="{{ isLocation('resumen') ? 'active' : '' }}">
+			<i class="fa fa-address-card fa-fw" aria-hidden="true"></i> Resumen
+		</div>
+	</a>
+
+	<a href="./#/perfil">
+		<div class="{{ isLocation('perfil') ? 'active' : '' }}">
+			<i class="fa fa-user-o fa-fw" aria-hidden="true"></i> Perfil
+		</div>
+	</a>
+
+	<a href="./#/suscripcion">
+		<div class="{{ isLocation('suscripcion') ? 'active' : '' }}">
+			<i class="fa fa-credit-card fa-fw" aria-hidden="true"></i> Suscripción
+		</div>
+	</a>
+
+	<a href="./#/consulta">
+		<div class="{{ isLocation('consulta') ? 'active' : '' }}">
+			<i class="fa fa-user-md fa-fw" aria-hidden="true"></i> Consulta
+		</div>
+	</a>
+
+	<hr>
+
+	<a href="" ng-click="session.logout()">
+		<div class="hover-red">
+			<i class="fa fa-sign-out fa-rotate-180 fa-fw" aria-hidden="true"></i> Salir
+		</div>
+	</a>
+</div>
