@@ -196,6 +196,7 @@
             $last = intval($post['last']) != -1 ? " and m.id<" . $post['last'] : "";
 
             $nuevos = isset($post['nuevos']) ? " and m.leido=0" : "";
+            $noSystem = $post['es_medico'] == 'true' && isset($post['nuevos']) ? " and m.owner!='_____system_____'" : "";
 
             $chat = array();
 
@@ -217,10 +218,10 @@
                     from Mensaje as m
                     where 
                         m.paciente=:paciente and
-                        m.medico=:medico ".$last."
-                        ".$nuevos."
+                        m.medico=:medico $last
+                        $nuevos $noSystem
                     order by m.hora desc
-                    limit ".($n * $m).",".$n."
+                    limit ".($n * $m).",$n
                 ) R
                 order by R.id asc
             ");
@@ -233,7 +234,7 @@
             $chat['mensajes'] = $query->fetchAll();
 
             foreach ($chat['mensajes'] as $m) {
-                if (strcmp($m['owner'], $post['me']) != 0) {
+                if (strcmp(strtoupper($m['owner']), strtoupper($post['me'])) != 0) {
                     $this->run("update Mensaje set leido=1 where id=:id", [":id" => $m['id']]);
                 }
             }

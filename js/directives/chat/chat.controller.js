@@ -29,7 +29,8 @@
 					paciente: this.paciente.id,
 					n: 10,
 					last: last,
-					me: this.session.getCurrentUser().usuario
+					me: this.session.getCurrentUser().usuario,
+					es_medico: this.session.getCurrentUser().es_medico
 				}).then((response) => {
 					this.concatMessages(response.data.mensajes, true);
 
@@ -49,7 +50,8 @@
 					n: 10,
 					last: -1,
 					nuevos: true,
-					me: this.session.getCurrentUser().usuario
+					me: this.session.getCurrentUser().usuario,
+					es_medico: this.session.getCurrentUser().es_medico
 				}).then((response) => {
 					this.concatMessages(response.data.mensajes);
 					this.scrollDown();
@@ -213,6 +215,31 @@
 				hid = this.mensajes[i].id < hid ? this.mensajes[i].id : hid;
 
 			this.load(hid);
+		}
+
+		close() {
+			$.confirm({
+				title: 'ALERTA',
+				content: "Al confirmar se descontará una consuta del paciente, ¿está seguro que desea continuar?",
+				confirm: () => {
+					this.RESTService.delete('consulta', { paciente: this.paciente.id, medico: this.medico.id })
+						.then((response) => {
+							if (this.session.getCurrentUser().es_medico) {
+								this.concatMessages([{
+									owner: '_____system_____',
+									html: 'Se ha cerrado la consulta',
+									hora_str: 'en este momento'
+								}])
+
+								this.scrollDown()
+							}
+
+							if (this.session.getCurrentUser().usuario == this.paciente.usuario) {
+								this.session.reload();
+							}
+						})
+				}
+			})
 		}
 	}
 

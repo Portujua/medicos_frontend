@@ -67,18 +67,22 @@
 	    }
 
 	    if (timeago.seg < 60) {
-	    	return `${timeago.seg} segundo${timeago.seg > 1 ? 's' : ''}`;
+	    	if (timeago.seg == 0) {
+	    		return 'justo ahora';
+	    	}
+
+	    	return `hace ${timeago.seg} segundo${timeago.seg > 1 ? 's' : ''}`;
 	    }
 
 	    if (timeago.min < 60) {
-	    	return `${timeago.min} minuto${timeago.min > 1 ? 's' : ''}`;
+	    	return `hace ${timeago.min} minuto${timeago.min > 1 ? 's' : ''}`;
 	    }
 
 	    if (timeago.hours < 24) {
-	    	return `${timeago.hours} hora${timeago.hours > 1 ? 's' : ''}`;
+	    	return `hace ${timeago.hours} hora${timeago.hours > 1 ? 's' : ''}`;
 	    }
 
-	    return `${timeago.days} día${timeago.days > 1 ? 's' : ''}`;
+	    return `hace ${timeago.days} día${timeago.days > 1 ? 's' : ''}`;
 	  };
 	});
 

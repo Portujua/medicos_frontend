@@ -12,6 +12,7 @@
 			this.cargar_medicos();
 		});
 
+		this.reloadDashboardTime = 60 * 1000;
 		$scope.editar = $routeParams.cedula;
 
 		this.cargar_pacientes = () => {
@@ -40,7 +41,12 @@
 					})
 				}
 			})
+
+			$timeout(() => {
+				this.cargar_pacientes();
+			}, this.reloadDashboardTime)
 		}
+
 		this.cargar_tsuscripciones = () => {
 			RESTService.getTSuscripcion($scope);
 		}
@@ -78,6 +84,10 @@
 					})
 				}
 			})
+
+			$timeout(() => {
+				this.cargar_medicos();
+			}, this.reloadDashboardTime)
 		}
 
 		this.cargar_paciente = (cedula) => {
@@ -168,34 +178,6 @@
 				else {
 					AlertService.showError("Ha ocurrido un error");
 					console.log(response.data.msg);
-				}
-			})
-		}
-
-		$scope.cerrar_consulta = function(info){
-			$.confirm({
-				title: 'ALERTA',
-				content: "Al confirmar se descontará una consuta del paciente",
-				confirm: function(){
-					$scope.isClosed = true; 
-					$scope.isChatting = false; 
-					$http({
-						method: 'POST',
-						url: "php/run.php?fn=cerrar_consulta",
-						data: $.param({usuario: info.paciente}),
-						headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-					}).then((response) => {
-						console.log(response)
-
-						if (response.data.ok) {
-							AlertService.showSuccess(response.data.msg);
-							LoginService.login({username: LoginService.getCurrentUser().usuario, password: LoginService.getCurrentUser().contrasena});
-						}
-						else {
-							AlertService.showError("Ha ocurrido un error");
-							console.log(response.data.msg);
-						}
-					})
 				}
 			})
 		}

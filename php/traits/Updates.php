@@ -1,24 +1,5 @@
 <?php
 	trait Updates {
-
-        public function put_cerrar_consulta($post)
-        {
-            $json = array();
-
-            $query = $this->db->prepare("
-                    update Suscripcion set cant_cons_restantes=cant_cons_restantes-1 where paciente=:pid and cant_cons_restantes>0
-            ");
-
-            $query->execute(array(
-                ":pid" => $post['usuario'],
-            ));
-
-            $json["status"] = "ok";
-            $json["ok"] = true;
-            $json["msg"] = "Se ha cerrado la consulta";
-
-            return json_encode($json);
-        }
 		
 		public function put_paciente($post)
         {

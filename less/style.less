@@ -805,6 +805,7 @@ body {
 	.panel {
 		border: 1px solid #333;
 		border-radius: 0px;
+		max-height: 90vh;
 
 		.opt {
 			padding: 10px;
@@ -847,10 +848,7 @@ body {
 		border-radius: 8px;
 		padding: 2px;
 		width: 100%;
-		/*border-color: #ddd;
-		background-color: #ddd;
-		border: 1px solid #333;*/
-		height: calc(~"100vh - 50px");
+		height: calc(~"100vh - 135px");
 
 		.mensajes {
 			padding: 7px;
@@ -878,6 +876,12 @@ body {
 				min-height: 30px;
 				margin-bottom: 6px;
 				float: left;
+
+				&.text-center {
+					.bubble {
+						background-color: #111;
+					}
+				}
 
 				&:last-child {
 					margin-bottom: 0px;

@@ -16,7 +16,7 @@
 					<i class="fa fa-envelope fa-fw" aria-hidden="true"></i>
 				</div>
 				<div>
-					<span class="owner">{{ session.getCurrentUser().es_medico ? r.ultimo_mensaje.paciente : r.ultimo_mensaje.medico | capitalize }} hace {{ r.ultimo_mensaje.hora_str | timeago }}:</span> <br>
+					<span class="owner">{{ session.getCurrentUser().es_medico ? r.ultimo_mensaje.paciente : r.ultimo_mensaje.medico | capitalize }} {{ r.ultimo_mensaje.hora_str | timeago }}</span> <br>
 					<span class="mensaje" ng-bind-html="r.ultimo_mensaje.html | noImagenes:64"></span>
 				</div>
 			</div>

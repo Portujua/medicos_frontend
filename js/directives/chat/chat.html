@@ -1,10 +1,16 @@
 <div class="chat">
+	<p class="cerrar_consulta" ng-if="$ctrl.session.getCurrentUser().es_medico && $ctrl.isChatting">
+		<button class="btn btn-danger btn-block btn-xs" ng-click="$ctrl.close()">
+			<i class="fa fa-times" aria-hidden="true"></i> Cerrar consulta
+		</button>
+	</p>
+
 	<div class="chat-window" ng-if="$ctrl.isChatting">
 		<div class="mensajes">
 			<p class="cargar-mas" ng-click="$ctrl.loadMore()">Cargar más</p>
-			<div class="mensaje" ng-repeat="m in $ctrl.mensajes">
-				<div class="bubble {{ m.owner == $ctrl.session.getCurrentUser().usuario ? 'derecha' : 'izquierda' }}">
-					<b><small>{{ m.owner_name | capitalize }} hace {{ m.hora_str || 'un momento' | timeago }}:</small></b> <br/>
+			<div class="mensaje {{ m.owner == '_____system_____' ? 'text-center' : '' }}" ng-repeat="m in $ctrl.mensajes">
+				<div class="bubble {{ m.owner == $ctrl.session.getCurrentUser().usuario ? 'derecha' : (m.owner == '_____system_____' ? '' : 'izquierda') }}">
+					<b ng-if="m.owner != '_____system_____'"><small>{{ m.owner_name | capitalize }} {{ m.hora_str || 'hace un momento' | timeago }}</small><br/></b>
 					<span ng-bind-html="m.html"></span>
 					<br><span class="leido" ng-if="m.leido == 1 && m.owner == $ctrl.session.getCurrentUser().usuario">Leído</span>
 				</div>
