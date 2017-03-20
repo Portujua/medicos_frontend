@@ -172,7 +172,6 @@
 				console.log(response)
 
 				if (response.data.ok) {
-					AlertService.showSuccess(response.data.msg);
 					LoginService.login({username: LoginService.getCurrentUser().usuario, password: LoginService.getCurrentUser().contrasena});
 				}
 				else {

@@ -2,7 +2,7 @@
 	trait Utils {
         abstract public function run($query, $opts = []);
 
-        public function post_check_cedula_paciente($post)
+        public function get_check_cedula_paciente($post)
         {
             $query = $this->db->prepare("
                 select *
@@ -21,19 +21,23 @@
             return json_encode($json);
         }
 
-        public function post_check_usuario($post)
+        public function get_check_usuario($post)
         {
-            $p = $this->run("
+            $p = $this->db->prepare("
                 select *
                 from Paciente
                 where upper(usuario)=upper(:usuario)
-            ", [":usuario" => $post['val']]);
+            ");
 
-            $m = $this->run("
+            $p->execute([":usuario" => $post['val']]);
+
+            $m = $this->db->prepare("
                 select *
                 from Medico
                 where upper(usuario)=upper(:usuario)
-            ", [":usuario" => $post['val']]);
+            ");
+
+            $m->execute([":usuario" => $post['val']]);
 
             $json = array();
             $json['existe'] = $p->rowCount() > 0 || $m->rowCount() > 0 ? true : false;
@@ -155,9 +159,12 @@
         }
 
         public function validarEmail($token) {
-            $r = $this->run("select * from Token where token=:token", [":token" => $token]);
+            $r = $this->db->prepare("select * from Token where token=:token");
+            $r->execute([":token" => $token]);
 
             if ($r->rowCount() == 1) {
+                $this->run("update Paciente set email_validado=1 where usuario=(select extra from Token where token=:token)", [":token" => $token]);
+
                 $this->run("delete from Token where token=:token", [":token" => $token]);
                 return true;
             }

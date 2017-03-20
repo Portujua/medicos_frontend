@@ -135,5 +135,6 @@ create table Token (
 	id int not null auto_increment,
 	token varchar(128) not null,
 	para varchar(128) default 'validar_email',
+	extra varchar(256),
 	primary key(id), unique(token)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;

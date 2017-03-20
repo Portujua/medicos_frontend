@@ -1,5 +1,5 @@
 <div class="userpanel resumen">
-	<div class="alert alert-info fade in" ng-if="!session.getCurrentUser().email_validado">
+	<div class="alert alert-info fade in" ng-if="session.getCurrentUser().email_validado == '0'">
 	  <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
 	  <strong>Cuenta no verificada!</strong> Por favor confirma tu cuenta haciendo click en el enlace que hemos enviado a {{ session.getCurrentUser().email | lowercase }}
 	</div>

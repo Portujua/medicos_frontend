@@ -42,7 +42,7 @@
 
             $token = getToken();
 
-            $this->run("insert into Token (token) values (:token)", [":token" => $token]);
+            $this->run("insert into Token (token, extra) values (:token, :usuario)", [":token" => $token, ":usuario" => strtoupper($port['usuario'])]);
 
             $nombreCompleto = strtoupper($post['nombre'])." ".strtoupper($post['apellido']);
             $url = "http://www.salazarseijas.com/medicos/php/validate.php?token=$token";
