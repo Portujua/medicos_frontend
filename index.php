@@ -120,6 +120,8 @@
 		<!-- Chat directive -->
 		<script type="text/javascript" src="js/directives/chat/chat.directive.js"></script>
 		<script type="text/javascript" src="js/directives/chat/chat.controller.js"></script>
+
+		<link rel="stylesheet" href="css/estiloAdmin.css">
 	</head>
 
 	<body ng-controller="MainController">
